@@ -171,7 +171,7 @@ body {
 }
 
 /* NEWSとPROFILEの背景色 */
-#news, #profile-summary,#recruit,#calender {
+#news, #profile-summary,#recruit,#calender,#access {
     background-color: rgba(255, 255, 255, 0.9); /* 90%不透明の白 */
     margin: 50px auto;       /* 上下に余白を作り、中央寄せ */
     padding: 60px 5%;        /* 内側の余白を調整 */
@@ -655,4 +655,55 @@ body {
 .news-text {
     color: #333;       /* 文字の色を濃くして読みやすくする */
     margin-left: 10px; /* カテゴリとの間隔を空ける */
+}
+
+.map-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 900px; /* 地図の最大幅 */
+    margin: 0 auto;   /* 中央寄せ */
+    border-radius: 15px;
+    overflow: hidden; /* 角丸を適用 */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.map-wrapper iframe {
+    display: block;
+    width: 100%; /* 横幅いっぱいに広げる */
+}
+
+/* ACCESS全体の白い枠 */
+.access-wrapper {
+    background: rgba(255, 255, 255, 0.8); /* 他のセクションと合わせた透過白 */
+    border-radius: 15px;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* 地図の角を丸くする */
+.map-wrapper {
+    border-radius: 10px;
+    overflow: hidden;
+    line-height: 0; /* 下の余計な隙間を消す */
+}
+
+/* 住所テキストの装飾 */
+.access-info {
+    text-align: center;
+    margin-top: 20px;
+    color: #333;
+}
+
+.address-text {
+    font-weight: bold;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.route-text {
+    font-size: 0.9rem;
+    color: #666;
 }
