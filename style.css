@@ -1,0 +1,658 @@
+/* リセットCSS：余計な余白を消す */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* bodyの背景設定は空にするか、ベースの色だけにする */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* 背景専用のスタイル */
+.fixed-background {
+    position: fixed;   /* 画面に固定（スクロールしても動かない） */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;       /* 一番背面に配置 */
+
+    /* 画像の設定 */
+    background-image: url('めいん.jpeg'); 
+    background-size: contain;    /* 【重要】画像全体を収める（絶対に切れない） */
+    background-repeat: no-repeat; /* 繰り返さない（全体を1枚で見せたい場合） */
+    background-position: center;  /* 中央に配置 */
+    background-color: #fff;       /* 画像がない部分を埋める色（白やメンバーカラーなど） */
+}
+
+/* ヘッダー */
+.header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 40px; /* ヘッダーに収まる高さを指定 */
+    width: auto;   /* 横幅自動で調整 */
+    display: block;
+}
+
+.nav ul {
+    display: flex;
+    list-style: none;
+}
+
+.nav ul li {
+    margin-left: 25px;
+}
+
+.nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+.nav ul li a:hover {
+    color: #ff4d94; /* ホバー時にピンク色に */
+}
+
+/* メインビジュアル */
+.main-visual {
+    height: 100vh;
+    background-color: transparent; /* 背景色を透明にする */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+
+.main-logo-img {
+    width: 90%;          /* スマホで横幅いっぱいに。適宜調整してください */
+    max-width: 600px;    /* PCで大きくなりすぎないように制限 */
+    height: auto;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 4.5));
+
+}
+
+.visual-text p {
+    font-size: 1.5rem;    /* 営業時間の文字サイズを少し調整 */
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+}
+
+/* 共通セクション設定 */
+.container {
+    padding: 100px 10%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 50px;
+    letter-spacing: 0.1em;
+    position: relative;
+}
+
+
+/* ニュースリスト */
+.news-list {
+    list-style: none;
+    border-top: 1px solid #eee;
+}
+
+.news-list li {
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+}
+
+.news-list .date {
+    width: 120px;
+    font-size: 14px;
+    color: #888;
+}
+
+.news-list .category {
+    background: #ff4d94;
+    color: #fff;
+    padding: 2px 10px;
+    margin-right: 20px;
+    font-size: 11px;
+    border-radius: 3px;
+}
+
+.news-list a {
+    text-decoration: none;
+    color: #333;
+}
+
+.view-more {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.view-more a {
+    display: inline-block;
+    padding: 10px 40px;
+    border: 1px solid #333;
+    text-decoration: none;
+    color: #333;
+    transition: 0.3s;
+}
+
+.view-more a:hover {
+    background: #333;
+    color: #fff;
+}
+
+/* NEWSとPROFILEの背景色 */
+#news, #profile-summary,#recruit,#calender {
+    background-color: rgba(255, 255, 255, 0.9); /* 90%不透明の白 */
+    margin: 50px auto;       /* 上下に余白を作り、中央寄せ */
+    padding: 60px 5%;        /* 内側の余白を調整 */
+    border-radius: 30px;     /* 角を丸*/
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); /* 影 */
+    max-width: 1100px;       /* 横幅制限 */
+    position: relative;
+    z-index: 1;
+}
+
+/* セクション間の隙間から背景*/
+.container {
+    /* 既存の .container の padding を少し控えめにする */
+    padding: 60px 5%;
+}
+/* プロフィールグリッド */
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+}
+
+.profile-item {
+    text-align: center;
+}
+
+.profile-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;      /* 枠維持 */
+    border-radius: 10px;      /* 角丸 */
+    margin-bottom: 20px;
+    background-size: cover;    /* 枠いっぱいに表示 */
+    background-position: center top;  /* 画像の上部を基準に配置*/
+}
+
+.profile-item h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.role {
+    color: #ff4d94;
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.desc {
+    font-size: 14px;
+    text-align: left;
+    color: #666;
+}
+
+/* ムービーセクション */
+.dark-bg {
+    background-color: #f9f9f9;
+}
+
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+}
+
+/* フッター */
+.footer {
+    padding: 60px 0;
+    text-align: center;
+    background: #333;
+    color: #fff;
+    line-height: 1.8; 
+}
+
+.footer-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.footer .group-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+.footer .address {
+    font-size: 14px;
+    color: #ccc; 
+    margin-bottom: 30px;
+}
+
+.footer .copyright {
+    font-size: 12px;
+    color: #888;
+    border-top: 1px solid #444;
+    display: inline-block;
+    padding-top: 20px;
+}
+
+/* SNSボタン */
+.sns-links {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* ボタン同士の隙間 */
+}
+
+.sns-btn {
+    display: inline-block;
+    padding: 8px 20px;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 20px; /* 丸いボタン */
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.sns-btn:hover {
+    transform: translateY(-3px); 
+    opacity: 0.8;
+}
+
+/* 各SNSのブランドカラー */
+.x-link { background-color: #000; } /* X*/
+.insta-link { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); } /* インスタ*/
+.tiktok-link { background-color: #010101; border: 1px solid #ff0050; } /* TikTok*/
+
+/* メンバープロフィール内のSNSボタン */
+.member-sns {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.member-sns .sns-btn {
+    padding: 5px 15px;
+    font-size: 12px;
+    border-radius: 15px;
+    text-decoration: none;
+    color: #fff;
+    background-color: #000; /* Xのカラー */
+    transition: 0.3s;
+}
+
+.member-sns .sns-btn:hover {
+    opacity: 0.7;
+    transform: scale(1.05);
+}
+
+/* メンバープロフィール内のSNSエリアを調整 */
+.member-sns {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 8px; /* ボタン同士の隙間 */
+    flex-wrap: wrap; /* スマホで入り切らない場合に折り返す */
+}
+
+/* メンバー用SNSボタンの微調整 */
+.member-sns .sns-btn {
+    padding: 5px 12px; /* 少しスリムに */
+    font-size: 11px;    /* 文字を少し小さくして収まりを良くする */
+    border-radius: 15px;
+    min-width: 60px;   /* ボタンの最低幅を揃える */
+    text-align: center;
+}
+
+/* 求人ページ用のスタイル */
+.recruit-box {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+}
+
+.recruit-box h3 {
+    color: #ff4d94;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.recruit-intro {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.recruit-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.recruit-table th, .recruit-table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+.recruit-table th {
+    width: 30%;
+    background-color: #fff0f5;
+    color: #ff4d94;
+    font-weight: bold;
+}
+
+/* カレンダーをレスポンシブ対応にする */
+.calendar-wrapper {
+    position: relative;
+    padding-bottom: 75%; /* 4:3のアスペクト比 */
+    height: 0;
+    overflow: hidden;
+}
+
+.calendar-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+/* SYSTEMセクション専用スタイル */
+#system {
+    background-color: rgba(255, 255, 255, 0.9);
+    margin: 50px auto;
+    border-radius: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.system-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.system-box {
+    background: #fff;
+    padding: 25px;
+    border-radius: 20px;
+    border: 1px solid #ffe4ee;
+}
+
+.system-box h3 {
+    color: #ff4d94;
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 2px solid #ff4d94;
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+.system-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.system-table th, .system-table td {
+    padding: 12px 5px;
+    border-bottom: 1px dotted #eee;
+    font-size: 15px;
+}
+
+.system-table th {
+    text-align: left;
+    color: #555;
+    font-weight: bold;
+    width: 60%;
+}
+
+.system-table td {
+    text-align: right;
+    color: #333;
+    font-family: 'Georgia', serif; /* 数字を綺麗に見せる */
+}
+
+/* スマホ用調整 */
+@media (max-width: 480px) {
+    .system-wrapper {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* スマホ用の調整 */
+@media (max-width: 768px) {
+    .recruit-table th, .recruit-table td {
+        display: block;
+        width: 100%;
+    }
+    .recruit-table th {
+        background-color: transparent;
+        padding-bottom: 5px;
+    }
+}
+
+/* --- ゆいにゃさん専用特別スタイル --- */
+
+/* 1. カード全体に輝く枠線をつける */
+.profile-item.special-member {
+    position: relative;
+    padding: 15px;
+    border-radius: 20px;
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(45deg, #ff4d94, #ffdb58, #ff4d94) border-box;
+    border: 3px solid transparent;
+    transform: scale(1.05); /* 他のメンバーより少し大きく */
+    box-shadow: 0 10px 20px rgba(255, 77, 148, 0.2);
+    z-index: 2;
+}
+
+/* 2. 画像の左上に「LEADER」ラベルを配置 */
+.special-label {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    background: #ff4d94;
+    color: #fff;
+    padding: 5px 15px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+
+/* 3. 名前の色を特別にする */
+.special-member h3 {
+    color: #ff4d94;
+    font-size: 26px; /* 少し大きく */
+    text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
+}
+
+/* スマホでは大きさを微調整 */
+@media (max-width: 768px) {
+    .profile-item.special-member {
+        transform: scale(1.02);
+        margin-bottom: 30px;
+    }
+}
+
+
+
+/* --- ハンバーガーメニューのスタイル --- */
+
+/* PCではボタンを隠す */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 1100; /* ヘッダーより上に */
+}
+
+.hamburger span {
+    width: 100%;
+    height: 2px;
+    background-color: #000;
+    transition: all 0.3s;
+}
+
+/* スマホ表示（768px以下） */
+@media (max-width: 768px) {
+    /* ヘッダーのレイアウト崩れを防ぐ */
+    .header {
+        flex-direction: row; /* 縦並びにならないように横並びを維持 */
+        justify-content: space-between;
+        padding: 10px 5%;
+    }
+
+    /* メニューを隠す設定 */
+    .nav {
+        position: fixed;
+        top: 0;
+        right: -100%; /* 画面の外へ */
+        width: 100%;  /* スマホなら全画面でもOK */
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.98);
+        transition: 0.5s;
+        z-index: 1050;
+        display: block; /* 消えてしまわないように */
+    }
+
+    .nav.active {
+        right: 0; /* 表示 */
+    }
+
+    .nav ul {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding: 0;
+    }
+
+    .nav ul li {
+        margin: 20px 0; /* メニューの間隔を広げる */
+        margin-left: 0; /* PC用のマージンをリセット */
+    }
+
+    .nav ul li a {
+        font-size: 20px; /* 文字を大きく */
+    }
+
+    /* ボタンを表示させる */
+    .hamburger {
+        display: flex;
+    }
+}
+
+/* SYSTEMセクションのスタイル調整 */
+.system-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.system-box {
+    background: rgba(255, 255, 255, 0.8); /* 背景を少し透過させておしゃれに */
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
+    max-width: 350px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.system-box h3 {
+    border-bottom: 2px solid #ffb6c1; /* ロゴに合わせた色に変更してください */
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.system-list {
+    list-style: none;
+    padding: 0;
+}
+
+.system-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed #ddd;
+}
+
+.system-list li:last-child {
+    border-bottom: none;
+}
+
+.label {
+    font-weight: bold;
+}
+
+.price {
+    font-family: 'Georgia', serif;
+    font-size: 1.1rem;
+}
+
+.system-note {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    margin-top: 30px;
+}
+
+.news-text {
+    color: #333;       /* 文字の色を濃くして読みやすくする */
+    margin-left: 10px; /* カテゴリとの間隔を空ける */
+}

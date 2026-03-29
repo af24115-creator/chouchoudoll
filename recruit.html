@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RECRUIT | しゅしゅどーる</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- 求人ページ専用スタイル --- */
+        body {
+            /* 背景色設定 */
+            background-color: #fce4ec; 
+            color: #333;
+        }
+
+        .recruit-container {
+            padding-top: 120px; /* ヘッダーとの被りを防ぐ */
+            padding-bottom: 60px;
+            text-align: center;
+            max-width: 900px; /* 画像の最大幅に合わせて調整 */
+            margin: 0 auto;
+        }
+
+        /* 貼り付ける画像の設定 */
+        .recruit-image {
+            width: 95%; /* 画面幅に合わせて伸縮 */
+            max-width: 800px; /* 大きくなりすぎないよう制限 */
+            height: auto;
+            border-radius: 15px; /* 角を少し丸く */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* 浮き出ているような影 */
+            margin-bottom: 30px;
+        }
+
+        .apply-area {
+            margin-top: 20px;
+        }
+
+        .apply-btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 30px;
+            background-color: #ff4d94;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(255, 77, 148, 0.3);
+            transition: 0.3s;
+        }
+
+        .apply-btn:hover {
+            transform: translateY(-3px);
+            background-color: #ff1a75;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+    <div class="logo">
+        <img src="logo.jpeg" alt="しゅしゅどーる 公式ロゴ">
+    </div>
+
+    <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <nav class="nav" id="nav-menu">
+        <ul>
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="index.html#news">NEWS</a></li>
+            <li><a href="#system">SYSTEM</a></li>
+            <li><a href="profile.html">PROFILE</a></li>
+            <li><a href="recruit.html">RECRUIT</a></li>
+        </ul>
+    </nav>
+</header>
+
+    <div class="recruit-container">
+        <img src="rec.jpg" alt="求人詳細画像" class="recruit-image">
+
+        <div class="apply-area">
+            <p>ご応募・お問い合わせは下記よりお願いいたします</p>
+            <a href=" https://lin.ee/nleVgpb" class="apply-btn" target="_blank">LINE@で応募</a>
+            <a href="https://x.com/ChouchouDoll_oO" class="apply-btn" target="_blank">公式X(Twitter)で応募</a>
+        </div>
+
+        <div class="view-more" style="margin-top: 50px;">
+            <a href="index.html">HOMEへ戻る</a>
+        </div>
+    </div>
+
+    <script>
+    // 画面が読み込まれてから実行する
+    document.addEventListener('DOMContentLoaded', function() {
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('nav-menu');
+
+        // ハンバーガーボタンが存在するか確認
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', function() {
+                // ボタンとメニューの両方に 'active' クラスを付け外しする
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+
+            // メニュー内のリンクをクリックしたらメニューを閉じる
+            const navLinks = document.querySelectorAll('.nav ul li a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburger.classList.remove('active');
+                    navMenu.classList.remove('active');
+                });
+            });
+        }
+    });
+</script>
+    </body>
+</html>
