@@ -20,13 +20,31 @@ body {
     height: 100vh;
     z-index: -1;       /* 一番背面に配置 */
 
-    /* 画像の設定 */
-    background-image: url('めいん.jpeg'); 
-    background-size: contain;    /* 【重要】画像全体を収める（絶対に切れない） */
-    background-repeat: no-repeat; /* 繰り返さない（全体を1枚で見せたい場合） */
+    /* 画像の共通設定 */
+    background-size: contain;    /* 画像全体を収める */
+    background-repeat: no-repeat;  
     background-position: center;  /* 中央に配置 */
-    background-color: #fff;       /* 画像がない部分を埋める色（白やメンバーカラーなど） */
+    background-color: #fff;       /* 画像がない部分を埋める色 */
 }
+
+/* -----------------------------------
+縦画面（スマホの縦持ちなど）の背景画像
+----------------------------------- */
+@media (orientation: portrait) {
+    .fixed-background {
+        background-image: url('ゆいにゃさん.jpg'); 
+    }
+}
+
+/* -----------------------------------
+横画面（PCやスマホの横持ちなど）の背景画像
+----------------------------------- */
+@media (orientation: landscape) {
+    .fixed-background {
+        background-image: url('めいん.jpeg'); 
+    }
+}
+
 
 /* ヘッダー */
 .header {
