@@ -221,6 +221,30 @@
             navMenu.classList.remove('active');
         });
     });
+    // --- 背景 ---
+    window.addEventListener('load', () => {
+        const bgElement = document.querySelector('.fixed-background');
+        
+        // ランダムに表示させたい画像のリスト
+        const images = ['ゆ1.jpg','ゆ2.jpg', 'ゆいにゃさん.jpg'];
+
+        function updateBackground() {
+            // 縦画面
+            if (window.innerHeight > window.innerWidth) {
+                const randomIndex = Math.floor(Math.random() * images.length);
+                const selectedImage = images[randomIndex];
+                bgElement.style.backgroundImage = `url('${selectedImage}')`;
+            } else {
+                bgElement.style.backgroundImage = '';
+            }
+        }
+
+        // 実行
+        updateBackground();
+
+        // 画面の向きが変わった時にも再判定する
+        window.addEventListener('resize', updateBackground);
+    });
 </script>
 </body>
 </html>
