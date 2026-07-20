@@ -21,7 +21,6 @@
             width: 140px;
             height: 200px;
             background-color: #ffffff;
-            /* ピンクと薄い紫のグラデーション枠線 */
             border: 2px solid #ff9ebb;
             border-image: linear-gradient(135deg, #ff9ebb, #d8b4fe) 1;
             border-radius: 10px;
@@ -363,7 +362,7 @@
             const workingCasts = castMembers.filter(cast => cast.workDays.includes(targetDateStr));
 
             if (workingCasts.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#888;">本日の出勤予定はありません。</p>';
+                container.innerHTML = '<p style="text-align:center; color:#888;">本日は店休日です。</p>';
                 return;
             }
 
