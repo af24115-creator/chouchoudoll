@@ -5,6 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HOME | しゅしゅどーる</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- カード風（マークなし）のスタイル定義 --- */
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .trump-card {
+            position: relative;
+            width: 140px;
+            height: 200px;
+            background-color: #ffffff;
+            /* ピンクと薄い紫のグラデーション枠線 */
+            border: 2px solid #ff9ebb;
+            border-image: linear-gradient(135deg, #ff9ebb, #d8b4fe) 1;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(216, 180, 254, 0.25);
+            padding: 8px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* ホバー時のカード浮き上がり効果 */
+        .trump-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 18px rgba(255, 158, 187, 0.35);
+        }
+
+        /* カードの内枠 */
+        .trump-card-inner {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #f0d8ff; /* 薄い紫 */
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 4px;
+            box-sizing: border-box;
+        }
+
+        /* キャスト写真の枠（縦長四角） */
+        .cast-photo {
+            width: 105px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #ffd0e0;
+        }
+
+        /* キャスト名 */
+        .cast-name {
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-top: 8px;
+            color: #4a3b52;
+            text-align: center;
+            word-break: break-all;
+        }
+
+        /* スケジュール切り替えボタン */
+        .schedule-btn {
+            background-color: #ffffff;
+            border: 2px solid #ff9ebb; /* ピンクの枠線 */
+            color: #8b5cf6;            /* 薄い紫系の文字色 */
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(255, 158, 187, 0.2);
+        }
+        
+        .schedule-btn.active, .schedule-btn:hover {
+            /* ピンクから薄紫へのグラデーション背景 */
+            background: linear-gradient(135deg, #ff8da1 0%, #c084fc 100%);
+            border-color: transparent;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(192, 132, 252, 0.4);
+        }
+    </style>
 </head>
 <body>
     <div class="fixed-background"></div>
@@ -24,12 +114,11 @@
             <ul>
                 <li><a href="#home">HOME</a></li>
                 <li><a href="#news">NEWS</a></li>
+                <li><a href="#schedule">SCHEDULE</a></li>
                 <li><a href="#system">SYSTEM</a></li>
                 <li><a href="profile.html">PROFILE</a></li>
                 <li><a href="#access">ACCESS</a></li>
-                <!-- <li><a href="#movie">MOVIE</a></li> -->
                 <li><a href="#shop">SHOP</a></li>   
-                <li><a href="recruit.html">RECRUIT</a></li> 
             </ul>
         </nav>
     </header>
@@ -52,67 +141,76 @@
         </ul>
     </section>
 
- <!--    <section id="schedule" class="container">
-    <h2 class="section-title">SCHEDULE</h2>
-    <div class="calendar-wrapper">
-        <iframe src="https://calendar.google.com/calendar/embed?src=あなたのカレンダーID&ctz=Asia%2FTokyo" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
-    </div>
-</section> -->
-
-<section id="system" class="container">
-    <h2 class="section-title">SYSTEM</h2>
-    <div class="system-wrapper">
+    <!-- SCHEDULE セクション（白い枠背景を追加） -->
+    <section id="schedule" class="container">
+        <h2 class="section-title">SCHEDULE</h2>
         
-        <div class="system-box">
-            <h3>CHARGE <small>(60min)</small></h3>
-            <ul class="system-list">
-                <li>
-                    <span class="label">チャージ</span>
-                    <span class="price">　¥1,100 <small>+1ドリンク制</small></span>
-                </li>
-            </ul>
+        <!-- 切替ボタンエリア -->
+        <div class="schedule-nav" style="text-align: center; margin-bottom: 20px;">
+            <button id="btn-today" class="schedule-btn active">本日の出勤</button>
+            <button id="btn-tomorrow" class="schedule-btn">明日の出勤</button>
         </div>
 
-        <div class="system-box">
-            <h3>FREE DRINK <small>(60min)</small></h3>
-            <ul class="system-list">
-                <li>
-                    <span class="label">ソフトドリンク</span>
-                    <span class="price">　¥3,000</span>
-                </li>
-                <li>
-                    <span class="label">アルコール</span>
-                    <span class="price">　¥3,300</span>
-                </li>
-                <li>
-                    <span class="label">缶込</span>
-                    <span class="price">　¥3,800</span>
-                </li>
-            </ul>
-        </div>
+        <p id="schedule-date-label" style="text-align: center; font-weight: bold; margin-bottom: 20px; font-size: 1.1rem; color: #5c4362;"></p>
 
-        <div class="system-box">
-            <h3>DRINK & FOOD</h3>
-            <ul class="system-list">
-                <li>
-                    <span class="label">ドリンク</span>
-                    <span class="price">　¥880〜</span>
-                </li>
-                <li>
-                    <span class="label">キャストドリンク</span>
-                    <span class="price">　¥1,100〜</span>
-                </li>
-                <li>
-                    <span class="label">フード</span>
-                    <span class="price">　¥500〜</span>
-                </li>
-            </ul>
-        </div>
+        <!-- 出勤キャスト（カード型）挿入先 -->
+        <div id="cast-list-container" class="card-container"></div>
+    </section>
 
-    </div>
-    <p class="system-note">※価格はすべて税込み表示です。</p>
-    <p class="system-note">※お会計時サービス料金10%を頂戴します。</p>
-</section>
+    <section id="system" class="container">
+        <h2 class="section-title">SYSTEM</h2>
+        <div class="system-wrapper">
+            
+            <div class="system-box">
+                <h3>CHARGE <small>(60min)</small></h3>
+                <ul class="system-list">
+                    <li>
+                        <span class="label">チャージ</span>
+                        <span class="price"> ¥1,100 <small>+1ドリンク制</small></span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="system-box">
+                <h3>FREE DRINK <small>(60min)</small></h3>
+                <ul class="system-list">
+                    <li>
+                        <span class="label">ソフトドリンク</span>
+                        <span class="price"> ¥3,000</span>
+                    </li>
+                    <li>
+                        <span class="label">アルコール</span>
+                        <span class="price"> ¥3,300</span>
+                    </li>
+                    <li>
+                        <span class="label">缶込</span>
+                        <span class="price"> ¥3,800</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="system-box">
+                <h3>DRINK & FOOD</h3>
+                <ul class="system-list">
+                    <li>
+                        <span class="label">ドリンク</span>
+                        <span class="price"> ¥880〜</span>
+                    </li>
+                    <li>
+                        <span class="label">キャストドリンク</span>
+                        <span class="price"> ¥1,100〜</span>
+                    </li>
+                    <li>
+                        <span class="label">フード</span>
+                        <span class="price"> ¥500〜</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        <p class="system-note">※価格はすべて税込み表示です。</p>
+        <p class="system-note">※お会計時サービス料金10%を頂戴します。</p>
+    </section>
 
     <section id="profile-summary" class="container">
         <h2 class="section-title">PROFILE</h2>
@@ -121,7 +219,6 @@
             <a href="profile.html">VIEW CASTS</a>
         </div>
     </section>
-    
 
     <section id="access" class="container">
         <h2 class="section-title">ACCESS</h2>
@@ -138,93 +235,176 @@
 
     <section id="shop" class="container">
         <h2 class="section-title">SHOP</h2>
-        <p style="text-align: center; margin-bottom: 30px;">しゅしゅどーるの遠隔サイトはこちらです。</p>
+        <p style="text-align: center; margin-bottom: 30px;">しゅしゅど～るの遠隔サイトはこちらです。</p>
         <div class="view-more" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
             <a href="https://chouchoudoll.kawaiishop.jp/" target="_blank">ONLINE SHOP</a>
             <a href="https://chouchoudoll.kawaiishop.jp/items/139108277" target="_blank">a shot of ?</a>
         </div>
     </section>
 
-    <!-- 
-    <section id="movie" class="container dark-bg">
-        <h2 class="section-title">MOVIE</h2>
-        <div class="video-wrapper">
-            <iframe width="560" height="315" src="ゆーちゅーぶのりんく" frameborder="0" allowfullscreen></iframe>
-        </div>
-    </section> -->
-
-    <section id="recruit" class="container">
-        <h2 class="section-title">RECRUIT</h2>
-        <p style="text-align: center;">一緒に働いてくれるキャストを募集します。</p>
-        <div class="view-more">
-            <a href="recruit.html">CHECK</a>
-        </div>
-    </section>
-
     <footer class="footer">
-    <div class="footer-content">
-        <p class="group-name">
-            しゅしゅどーる<br>
-            SNS各種アカウント<br>
-        </p>
+        <div class="footer-content">
+            <p class="group-name">
+                しゅしゅど～る<br>
+                SNS各種アカウント<br>
+            </p>
 
-        <div class="sns-links">
-            <a href="https://x.com/ChouchouDoll_oO?s=20" class="sns-btn x-link" target="_blank">X (Twitter)</a>
-            <a href="https://instagram.com/chouchoudoll_o0?igsh=emo3YWc3NzVlOWl1" class="sns-btn insta-link" target="_blank">Instagram</a>
-            <a href="https://tiktok.com/@Chouchoudoll_o0" class="sns-btn tiktok-link" target="_blank">TikTok</a>
+            <div class="sns-links">
+                <a href="https://x.com/ChouchouDoll_oO?s=20" class="sns-btn x-link" target="_blank">X (Twitter)</a>
+                <a href="https://instagram.com/chouchoudoll_o0?igsh=emo3YWc3NzVlOWl1" class="sns-btn insta-link" target="_blank">Instagram</a>
+                <a href="https://tiktok.com/@Chouchoudoll_o0" class="sns-btn tiktok-link" target="_blank">TikTok</a>
+            </div>
+
+            <p class="address">
+                〒160-0021<br>
+                東京都新宿区歌舞伎町2丁目14-12<br>
+                光凛ビル B1F<br>
+            </p>
+            <p class="copyright">&copy; しゅしゅど～る</p>
         </div>
+    </footer>
 
-        <p class="address">
-            〒160-0021<br>
-            東京都新宿区歌舞伎町2丁目14-12<br>
-            光凛ビル B1F<br>
-        </p>
-        <p class="copyright">&copy; しゅしゅどーる</p>
-    </div>
-</footer>
+    <!-- スクリプト部 -->
+    <script>
+        // ハンバーガーメニュー
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('nav-menu');
 
-<!-- ハンバーガー -->
-<script>
-    const hamburger = document.getElementById('hamburger');
-    const navMenu = document.getElementById('nav-menu');
-
-    // ボタンをクリックしたら 'active' クラスを付け外しする
-    hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
-    });
-
-    // メニュー内のリンクをクリックしたらメニューを閉じる
-    document.querySelectorAll('.nav ul li a').forEach(link => {
-        link.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
         });
-    });
-    // --- 背景 ---
-    window.addEventListener('load', () => {
-        const bgElement = document.querySelector('.fixed-background');
-        
-        // ランダムに表示させたい画像のリスト
-        const images = ['ゆ1.jpg','ゆ2.jpg', 'ゆいにゃさん.jpg'];
 
-        function updateBackground() {
-            // 縦画面
-            if (window.innerHeight > window.innerWidth) {
-                const randomIndex = Math.floor(Math.random() * images.length);
-                const selectedImage = images[randomIndex];
-                bgElement.style.backgroundImage = `url('${selectedImage}')`;
-            } else {
-                bgElement.style.backgroundImage = '';
+        document.querySelectorAll('.nav ul li a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // 背景切り替え
+        window.addEventListener('load', () => {
+            const bgElement = document.querySelector('.fixed-background');
+            const images = ['ゆ1.jpg', 'ゆ2.jpg', 'ゆいにゃさん.jpg'];
+
+            function updateBackground() {
+                if (window.innerHeight > window.innerWidth) {
+                    const randomIndex = Math.floor(Math.random() * images.length);
+                    const selectedImage = images[randomIndex];
+                    bgElement.style.backgroundImage = `url('${selectedImage}')`;
+                } else {
+                    bgElement.style.backgroundImage = '';
+                }
             }
+
+            updateBackground();
+            window.addEventListener('resize', updateBackground);
+        });
+
+        // --- カード出勤スケジュール制御 ---
+        const castMembers = [
+            {
+                name: "ゆいにゃ",
+                image: "ゆいにゃさん.jpg",
+                workDays: ["2026-07-20", "2026-07-22","2026-07-24", "2026-07-25","2026-07-26","2026-07-27","2026-07-28","2026-07-30","2026-07-31"]
+            },
+            {
+                name: "しゅか",
+                image: "しゅかさん.jpg",
+                workDays: ["2026-07-27", "2026-07-28"]
+            },
+            {
+                name: "ゆりる",
+                image: "ゆりるさん.jpg",
+                workDays: ["2026-07-20", "2026-07-22", "2026-07-24","2026-07-25","2026-07-26","2026-07-30"]
+            },
+            {
+                name: "みさき",
+                image: "みさきさん.jpg",
+                workDays: ["2026-07-20", "2026-07-28", "2026-07-30"]
+            },
+            {
+                name: "楓",
+                image: "楓さん.jpg",
+                workDays: ["2026-07-22", "2026-07-24", "2026-07-26","2026-07-31"]
+            },
+            {
+                name: "れい",
+                image: "れいさん.jpg",
+                workDays: ["2026-07-22", "2026-07-27"]
+            },
+            {
+                name: "ふちゃん",
+                image: "ふちゃんさん.jpg",
+                workDays: ["2026-07-20", "2026-07-25", "2026-07-26","2026-07-28","2026-07-31"]
+            },
+            {
+                name: "ひめ",
+                image: "ひめさん.jpg",
+                workDays: ["2026-07-20", "2026-07-24","2026-07-25","2026-07-27","2026-07-30","2026-07-31"]
+            }
+        ];
+
+        function getFormattedDate(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
         }
 
-        // 実行
-        updateBackground();
+        // カード生成処理
+        function renderScheduleByDate(targetDateStr) {
+            const container = document.getElementById('cast-list-container');
+            const dateLabel = document.getElementById('schedule-date-label');
+            
+            dateLabel.textContent = `${targetDateStr} の出勤キャスト`;
+            container.innerHTML = '';
 
-        // 画面の向きが変わった時にも再判定する
-        window.addEventListener('resize', updateBackground);
-    });
-</script>
+            const workingCasts = castMembers.filter(cast => cast.workDays.includes(targetDateStr));
+
+            if (workingCasts.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#888;">本日の出勤予定はありません。</p>';
+                return;
+            }
+
+            workingCasts.forEach(cast => {
+                const card = document.createElement('div');
+                card.className = 'trump-card';
+                
+                card.innerHTML = `
+                    <div class="trump-card-inner">
+                        <img src="${cast.image}" alt="${cast.name}" class="cast-photo">
+                        <p class="cast-name">${cast.name}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 初期化とボタンイベント
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const todayStr = getFormattedDate(today);
+
+            renderScheduleByDate(todayStr);
+
+            const btnToday = document.getElementById('btn-today');
+            const btnTomorrow = document.getElementById('btn-tomorrow');
+
+            btnToday.addEventListener('click', () => {
+                btnToday.classList.add('active');
+                btnTomorrow.classList.remove('active');
+                renderScheduleByDate(getFormattedDate(new Date()));
+            });
+
+            btnTomorrow.addEventListener('click', () => {
+                btnTomorrow.classList.add('active');
+                btnToday.classList.remove('active');
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                renderScheduleByDate(getFormattedDate(tomorrow));
+            });
+        });
+    </script>
 </body>
 </html>
