@@ -166,6 +166,14 @@ body {
 .news-list li a.news-link:hover {
     opacity: 0.65;
 }
+/* ニュースの著者表示（右寄せ） */
+.news-author {
+    text-align: right;   
+    font-size: 0.9rem;     
+    color: #666;           
+    margin-top: 20px;      
+    font-weight: bold;     
+}
 
 /* 日付 */
 .news-list .date {
@@ -756,7 +764,7 @@ body {
 }
 
 /* ==========================================
-   スマホ画面（768px以下）用のカード・枠線調整
+　 スマホ画面（768px以下）用のカード・枠線調整
    ========================================== */
 @media (max-width: 768px) {
     /* 1. 各セクションの白い四角（カード枠）をスマホに最適化 */
@@ -776,4 +784,10 @@ body {
         width: 95px;
         height: 120px;
     }
+
+    .news-list li a,
+    .news-list li a.news-link,
+    .news-list li a * {
+        text-decoration: none !important;
+}
 }
