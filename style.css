@@ -784,10 +784,17 @@ body {
         width: 95px;
         height: 120px;
     }
+.news-list li a.news-link {
+        flex-wrap: wrap !important; /* スマホでは折り返しを許可 */
+    }
 
-    .news-list li a,
-    .news-list li a.news-link,
-    .news-list li a * {
-        text-decoration: none !important;
-}
+    .news-author {
+        display: block;
+        width: 100%;          /* 100%幅を使って強制改行 */
+        text-align: right;    /* 右寄せ */
+        font-size: 0.8rem;    /* スマホ用に少し小さめ */
+        color: #666;
+        margin-top: 6px;
+    }
+    
 }
