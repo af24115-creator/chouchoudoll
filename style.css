@@ -136,7 +136,7 @@ body {
 }
 
 
-/* ニュースリスト */
+
 /* NEWSリスト全体 */
 .news-list {
     list-style: none;
@@ -144,27 +144,41 @@ body {
     margin: 0;
 }
 
-/* 各行のレイアウト */
+/* 各行の下線と間隔 */
 .news-list li {
-    display: flex;
-    flex-wrap: nowrap;       /* ★iPhoneで勝手に下に落ちないようにする */
-    align-items: flex-start;
     margin-bottom: 15px;
     border-bottom: 1px dashed #ccc;
     padding-bottom: 10px;
 }
 
-/* 日付 */
-.news-list .date {
-    flex: 0 0 85px;          /* ★iPhone対策：幅を85pxで完全に固定して縮ませない */
-    margin-right: 10px;
-    font-size: 0.95em;
-    line-height: 1.5;        /* テキストと高さを合わせる */
+/* ニュース行全体のリンク設定（行全体をタップ可能にする） */
+.news-list li a.news-link {
+    display: flex;
+    flex-wrap: nowrap;       /* iPhone等で勝手に折り返させない */
+    align-items: flex-start;
+    text-decoration: none;   /* リンクの下線を消す */
+    color: inherit;          /* 親要素の文字色を継承 */
+    width: 100%;
+    transition: opacity 0.2s ease;
 }
 
-/* INFOのピンクの四角 */
+/* ホバー・タップ時に少し透明にしてフィードバックを与える */
+.news-list li a.news-link:hover {
+    opacity: 0.65;
+}
+
+/* 日付 */
+.news-list .date {
+    flex: 0 0 85px;          /* 幅を85pxで固定 */
+    margin-right: 10px;
+    font-size: 0.95em;
+    line-height: 1.5;
+    color: #333;
+}
+
+/* INFOなどのカテゴリタグ */
 .news-list .category {
-    flex: 0 0 50px;          /* ★iPhone対策：幅を50pxで完全に固定して縮ませない */
+    flex: 0 0 50px;          /* 幅を50pxで固定 */
     margin-right: 10px;
     background-color: #ff99cc;
     color: #fff;
@@ -173,14 +187,15 @@ body {
     border-radius: 4px;
     font-size: 0.8em;
     line-height: 1;
-    box-sizing: border-box;  /* パディングで枠が膨らむのを防ぐ */
-    margin-top: 3px;         /* 隣のテキストと縦の位置を微調整 */
+    box-sizing: border-box;
+    margin-top: 3px;
 }
 
 /* ニュース本文 */
 .news-list .news-text {
-    flex: 1 1 auto;          /* 残りの幅をすべて使う */
+    flex: 1 1 auto;          /* 余った横幅を自動で伸ばす */
     line-height: 1.5;
+    color: #333;
 }
 
 .view-more {
@@ -202,7 +217,7 @@ body {
     color: #fff;
 }
 
-/* NEWSとPROFILEの背景色 */
+/* 背景色 */
 #news, #profile-summary,#recruit,#calender,#access,#shop,#schedule {
     background-color: rgba(255, 255, 255, 0.9); /* 90%不透明の白 */
     margin: 50px auto;       /* 上下に余白を作り、中央寄せ */
