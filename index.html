@@ -117,7 +117,7 @@
                 <li><a href="#system">SYSTEM</a></li>
                 <li><a href="profile.html">PROFILE</a></li>
                 <li><a href="#access">ACCESS</a></li>
-                <li><a href="#shop">SHOP</a></li>   
+                <li><a href="#shop">SHOP</a></li> 
             </ul>
         </nav>
     </header>
@@ -140,6 +140,9 @@
             </a>
         </li>
     </ul>
+    <div class="view-more" style="margin-top: 30px;">
+        <a href="album.html">EVENT ALBUMを見る</a>
+    </div>
 </section>
 
     <!-- SCHEDULE セクション（白い枠背景を追加） -->
@@ -250,6 +253,19 @@
             <a href="https://chouchoudoll.kawaiishop.jp/items/139108277" target="_blank">a shot of ?</a>
         </div>
     </section>
+
+
+<!-- 写真拡大表示用モーダル（ポップアップ） -->
+<div id="image-modal" class="modal" onclick="closeModal()">
+    <span class="modal-close">&times;</span>
+    <div class="modal-content-wrapper" onclick="event.stopPropagation()">
+        <img class="modal-content" id="modal-img" src="" alt="イベント画像">
+        <div class="modal-caption">
+            <span id="modal-date" class="modal-date"></span>
+            <h3 id="modal-title" class="modal-title"></h3>
+        </div>
+    </div>
+</div>
 
     <footer class="footer">
         <div class="footer-content">

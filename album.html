@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVENT ALBUM | しゅしゅどーる</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- ALBUM ページ専用スタイル --- */
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .album-card {
+            background: #ffffff;
+            border: 2px solid #ff9ebb;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(216, 180, 254, 0.25);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .album-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(255, 158, 187, 0.4);
+        }
+
+        .album-img-wrapper {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+            background-color: #fce4ec;
+        }
+
+        .album-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .album-card:hover .album-img-wrapper img {
+            transform: scale(1.06);
+        }
+
+        .album-info {
+            padding: 12px 15px;
+            background: #ffffff;
+        }
+
+        .album-date {
+            font-size: 0.8rem;
+            color: #c084fc;
+            font-weight: bold;
+        }
+
+        .album-title {
+            font-size: 0.95rem;
+            color: #4a3b52;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+
+        /* --- モーダル (タップ時の写真拡大表示) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal-content-wrapper {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 20px;
+            max-width: 550px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-content {
+            width: 100%;
+            max-height: 65vh;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .modal-caption {
+            margin-top: 12px;
+        }
+
+        .modal-date {
+            font-size: 0.85rem;
+            color: #ff8da1;
+            font-weight: bold;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            color: #4a3b52;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: #888;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2001;
+        }
+
+        .modal-close:hover {
+            color: #ff9ebb;
+        }
+
+        /* スマホ用調整 */
+        @media (max-width: 768px) {
+            .album-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 15px;
+            }
+
+            .album-img-wrapper {
+                height: 130px;
+            }
+
+            .album-title {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="logo">
+            <img src="logo.jpeg" alt="しゅしゅどーる 公式ロゴ">
+        </div>
+
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <nav class="nav" id="nav-menu">
+            <ul>
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="index.html#news">NEWS</a></li>
+                <li><a href="index.html#schedule">SCHEDULE</a></li>
+                <li><a href="index.html#system">SYSTEM</a></li>
+                <li><a href="profile.html">PROFILE</a></li>
+                <li><a href="album.html">ALBUM</a></li>
+                <li><a href="index.html#access">ACCESS</a></li>
+                <li><a href="index.html#shop">SHOP</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="album" class="container" style="margin-top: 100px;">
+        <h2 class="section-title">EVENT ALBUM</h2>
+        <p style="text-align: center; margin-bottom: 30px; color: #5c4362; font-weight: bold;">
+            これまでに開催されたイベントの思い出です♪
+        </p>
+
+        <!-- アルバムカード一覧 -->
+        <div class="album-grid">
+
+            <div class="album-card" onclick="openModal('ジュンブラ.jpg', 'ジューンブライドイベント', '2026.06.26~06.28')">
+                <div class="album-img-wrapper">
+                    <img src="ジュンブラ.jpg" alt="ジューンブライドイベント">
+                </div>
+                <div class="album-info">
+                    <span class="album-date">2026.06.26~06.28</span>
+                    <h3 class="album-title">ジューンブライドイベント</h3>
+                </div>
+            </div>
+
+            <div class="album-card" onclick="openModal('メイド.jpg', 'メイドイベント', '2026.05.10')">
+                <div class="album-img-wrapper">
+                    <img src="メイド.jpg" alt="メイドイベント">
+                </div>
+                <div class="album-info">
+                    <span class="album-date">2026.05.10</span>
+                    <h3 class="album-title">メイドイベント</h3>
+                </div>
+            </div>
+
+            <div class="album-card" onclick="openModal('10周年.jpg', 'ゆいにゃ10周年記念イベント', '2026.04.11')">
+                <div class="album-img-wrapper">
+                    <img src="10周年.jpg" alt="ゆいにゃ10周年記念イベント">
+                </div>
+                <div class="album-info">
+                    <span class="album-date">2026.04.11</span>
+                    <h3 class="album-title">ゆいにゃ10周年記念イベント</h3>
+                </div>
+            </div>
+
+            <div class="album-card" onclick="openModal('制服.jpg', '新生活！制服イベント！', '2026.04.01~04.05')">
+                <div class="album-img-wrapper">
+                    <img src="制服.jpg" alt="新生活！制服イベント！">
+                </div>
+                <div class="album-info">
+                    <span class="album-date">2026.04.01~04.05</span>
+                    <h3 class="album-title">新生活！制服イベント！</h3>
+                </div>
+            </div>
+
+            <!-- 新しいイベントは .album-card ブロックを複製 -->
+
+        </div>
+
+        <!-- HOMEへ戻るボタン -->
+        <div class="view-more" style="margin-top: 40px;">
+            <a href="index.html">HOMEへ戻る</a>
+        </div>
+    </section>
+
+    <!-- 写真拡大表示用モーダル -->
+    <div id="image-modal" class="modal" onclick="closeModal()">
+        <div class="modal-content-wrapper" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <img class="modal-content" id="modal-img" src="" alt="イベント画像">
+            <div class="modal-caption">
+                <span id="modal-date" class="modal-date"></span>
+                <h3 id="modal-title" class="modal-title"></h3>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; しゅしゅどーる</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // ハンバーガーメニュー制御
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav ul li a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // ALBUMの画像拡大モーダル制御
+        function openModal(imageSrc, title, date) {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-img');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDate = document.getElementById('modal-date');
+
+            modalImg.src = imageSrc;
+            modalTitle.textContent = title;
+            modalDate.textContent = date;
+
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('image-modal');
+            modal.style.display = 'none';
+        }
+
+        // キーボードのEscキーでもモーダルを閉じる
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
