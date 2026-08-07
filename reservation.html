@@ -421,7 +421,7 @@
                             <option value="21:30">21:30</option>
                             <option value="22:00">22:00</option>
                         </select>
-                        <div id="event-note" class="event-note">※9/12・9/13はイベント日につき部制となります</div>
+                        <div id="event-note" class="event-note">※9/12はイベント日につき部制となります</div>
                     </div>
                 </div>
 
@@ -586,12 +586,8 @@
 
                 <div class="form-row">
                     <div class="form-col form-group">
-                        <label class="form-label" for="user-name">お名前 <span class="required">必須</span></label>
-                        <input type="text" id="user-name" name="name" class="form-control" placeholder="例：山田 太郎" required>
-                    </div>
-                    <div class="form-col form-group">
-                        <label class="form-label" for="user-kana">フリガナ <span class="required">必須</span></label>
-                        <input type="text" id="user-kana" name="kana" class="form-control" placeholder="例：ヤマダ タロウ" required>
+                        <label class="form-label" for="user-name">ニックネーム <span class="required">必須</span></label>
+                        <input type="text" id="user-name" name="name" class="form-control" placeholder="例：ニックネーム" required>
                     </div>
                 </div>
 
@@ -693,7 +689,7 @@
         dateInput.setAttribute('min', today);
     }
 
-    // --- 9月12日・13日のみ「1部・2部・3部」にする切り替え処理 ---
+    // --- 9月12日のみ「1部・2部・3部」にする切り替え処理 ---
     const timeSelect = document.getElementById('res-time');
     const labelText = document.getElementById('label-text');
     const eventNote = document.getElementById('event-note');
@@ -727,7 +723,7 @@
             const month = parts[1];
             const day = parts[2];
 
-            if (month === '09' && (day === '12' || day === '13')) {
+            if (month === '09' && day === '12') {
                 if (labelText) labelText.textContent = 'ご来店区分';
                 if (timeSelect) timeSelect.innerHTML = specialPartOptionsHTML;
                 if (eventNote) eventNote.style.display = 'block';
