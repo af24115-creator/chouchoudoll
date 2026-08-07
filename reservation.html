@@ -1,4 +1,677 @@
-<script>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESERVATION | しゅしゅどーる</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- 予約フォーム専用のスタイル拡張 --- */
+        .reservation-container {
+            background-color: rgba(255, 255, 255, 0.92);
+            margin: 50px auto;
+            padding: 50px 8%;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            max-width: 900px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-header-desc {
+            text-align: center;
+            color: #5c4362;
+            font-size: 0.95rem;
+            margin-bottom: 35px;
+            line-height: 1.8;
+        }
+
+        .form-section {
+            background: #ffffff;
+            border: 1px solid #ffe4ee;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(255, 158, 187, 0.08);
+        }
+
+        .form-section-title {
+            font-size: 1.15rem;
+            color: #ff4d94;
+            border-bottom: 2px solid #ffb6c1;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+            color: #4a3b52;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-label .required {
+            background-color: #ff4d94;
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            font-weight: normal;
+        }
+
+        .form-label .optional {
+            background-color: #a3a3a3;
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            font-weight: normal;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #e2d5ed;
+            border-radius: 12px;
+            font-size: 1rem;
+            color: #333;
+            background-color: #faf8fd;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: #c084fc;
+            background-color: #ffffff;
+            box-shadow: 0 0 8px rgba(192, 132, 252, 0.3);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .form-col {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        /* イベント用注記 */
+        .event-note {
+            font-size: 0.85rem;
+            color: #ff4d94;
+            font-weight: bold;
+            margin-top: 6px;
+            display: none;
+        }
+
+        /* ラジオボタン / プラン選択カード */
+        .plan-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        .plan-card {
+            position: relative;
+        }
+
+        .plan-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .plan-card label {
+            display: block;
+            padding: 14px 16px;
+            background: #fcf9ff;
+            border: 2px solid #ebdcf5;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .plan-card input[type="radio"]:checked + label {
+            border-color: #ff8da1;
+            background: linear-gradient(135deg, rgba(255,240,245,0.9) 0%, rgba(245,235,255,0.9) 100%);
+            box-shadow: 0 4px 12px rgba(255, 158, 187, 0.25);
+        }
+
+        .plan-title {
+            font-weight: bold;
+            color: #4a3b52;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .plan-price {
+            color: #ff4d94;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .plan-desc {
+            font-size: 0.8rem;
+            color: #776880;
+            margin-top: 4px;
+        }
+
+        /* キャスト選択 */
+        .cast-select-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .cast-option input[type="radio"] {
+            display: none;
+        }
+
+        .cast-option label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 6px;
+            border: 2px solid #e2d5ed;
+            border-radius: 12px;
+            background: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .cast-option label img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffd0e0;
+            margin-bottom: 6px;
+        }
+
+        .cast-option label span {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #4a3b52;
+        }
+
+        .cast-option input[type="radio"]:checked + label {
+            border-color: #ff8da1;
+            background: #fff0f5;
+            box-shadow: 0 4px 10px rgba(255, 141, 161, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .cast-option input[type="radio"]:checked + label img {
+            border-color: #ff4d94;
+        }
+
+        /* 注意事項 */
+        .notes-box {
+            background-color: #fff9fa;
+            border: 1px dashed #ffaec9;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            color: #664f59;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .notes-box ul {
+            padding-left: 20px;
+            margin-top: 8px;
+        }
+
+        .agree-check {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .agree-check label {
+            font-weight: bold;
+            color: #4a3b52;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        /* 送信ボタン */
+        .submit-btn-wrapper {
+            text-align: center;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #ff8da1 0%, #c084fc 100%);
+            color: #ffffff;
+            border: none;
+            padding: 16px 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 18px rgba(192, 132, 252, 0.4);
+            letter-spacing: 0.05em;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(255, 141, 161, 0.5);
+            opacity: 0.95;
+        }
+
+        /* 完了モーダル */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            padding: 35px 25px;
+            border-radius: 24px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 3px solid #ff9ebb;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-content h3 {
+            color: #ff4d94;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            color: #5c4362;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .modal-close-btn {
+            background: #5c4362;
+            color: #fff;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .reservation-container {
+                width: 92%;
+                padding: 30px 15px;
+                margin: 30px auto;
+            }
+            .form-section {
+                padding: 20px 15px;
+            }
+            .plan-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="fixed-background"></div>
+
+    <header class="header">
+        <div class="logo">
+            <img src="logo.jpeg" alt="しゅしゅどーる 公式ロゴ">
+        </div>
+
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <nav class="nav" id="nav-menu">
+            <ul>
+                <li><a href="index.html#home">HOME</a></li>
+                <li><a href="index.html#news">NEWS</a></li>
+                <li><a href="index.html#schedule">SCHEDULE</a></li>
+                <li><a href="index.html#system">SYSTEM</a></li>
+                <li><a href="profile.html">PROFILE</a></li>
+                <li><a href="index.html#access">ACCESS</a></li>
+                <li><a href="#reservation">RESERVATION</a></li>
+                <li><a href="index.html#shop">SHOP</a></li> 
+            </ul>
+        </nav>
+    </header>
+
+    <main class="reservation-container" id="reservation">
+        <h2 class="section-title">RESERVATION</h2>
+        <p class="form-header-desc">
+            ご来店のご予約はこちらのフォームより承っております。<br>
+            必要事項をご入力の上、「予約を送信する」ボタンを押してください。
+        </p>
+
+        <form id="reservationForm">
+            <!-- 1. ご来店日時・人数・滞在時間 -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <span>📅</span> ご来店日時・人数・滞在時間
+                </div>
+
+                <div class="form-row">
+                    <!-- ご来店日 -->
+                    <div class="form-col form-group">
+                        <label class="form-label" for="res-date">ご来店日 <span class="required">必須</span></label>
+                        <input type="date" id="res-date" name="date" class="form-control" required>
+                    </div>
+
+                    <!-- ご来店時間 / 部選択（JavaScriptで動的変更） -->
+                    <div class="form-col form-group">
+                        <label class="form-label" for="res-time" id="res-time-label">
+                            <span id="label-text">ご来店時間</span> <span class="required">必須</span>
+                        </label>
+                        <select id="res-time" name="time" class="form-control" required>
+                            <option value="">時間を選択してください</option>
+                            <option value="18:00">18:00</option>
+                            <option value="18:30">18:30</option>
+                            <option value="19:00">19:00</option>
+                            <option value="19:30">19:30</option>
+                            <option value="20:00">20:00</option>
+                            <option value="20:30">20:30</option>
+                            <option value="21:00">21:00</option>
+                            <option value="21:30">21:30</option>
+                            <option value="22:00">22:00</option>
+                        </select>
+                        <div id="event-note" class="event-note">※9/12・9/13はイベント日につき部制となります</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <!-- 人数 -->
+                    <div class="form-col form-group">
+                        <label class="form-label" for="res-guests">ご来店人数 <span class="required">必須</span></label>
+                        <select id="res-guests" name="guests" class="form-control" required>
+                            <option value="1名">1名様</option>
+                            <option value="2名">2名様</option>
+                            <option value="3名">3名様</option>
+                            <option value="4名">4名様</option>
+                            <option value="5名以上">5名様以上（備考欄にご記入ください）</option>
+                        </select>
+                    </div>
+
+                    <!-- 予定滞在時間 -->
+                    <div class="form-col form-group">
+                        <label class="form-label" for="res-duration">予定滞在時間 <span class="required">必須</span></label>
+                        <select id="res-duration" name="duration" class="form-control" required>
+                            <option value="">滞在時間を選択してください</option>
+                            <option value="1時間（60分）">1時間（60分）</option>
+                            <option value="2時間（120分）">2時間（120分）</option>
+                            <option value="3時間（180分）">3時間（180分）</option>
+                            <option value="4時間以上">4時間以上</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. ご利用プラン -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <span>🍹</span> ご利用プラン
+                </div>
+
+                <div class="plan-options">
+                    <div class="plan-card">
+                        <input type="radio" id="plan-charge" name="plan" value="通常チャージ（60分 ¥1,100 + 1d）" checked>
+                        <label for="plan-charge">
+                            <div class="plan-title">
+                                <span>通常チャージ (60min)</span>
+                                <span class="plan-price">¥1,100</span>
+                            </div>
+                            <div class="plan-desc">+ 1ドリンク制</div>
+                        </label>
+                    </div>
+
+                    <div class="plan-card">
+                        <input type="radio" id="plan-soft" name="plan" value="ソフトドリンク飲み放題（60分 ¥3,000）">
+                        <label for="plan-soft">
+                            <div class="plan-title">
+                                <span>ソフトドリンク飲み放題</span>
+                                <span class="plan-price">¥3,000</span>
+                            </div>
+                            <div class="plan-desc">60min 飲み放題</div>
+                        </label>
+                    </div>
+
+                    <div class="plan-card">
+                        <input type="radio" id="plan-alcohol" name="plan" value="アルコール飲み放題（60分 ¥3,300）">
+                        <label for="plan-alcohol">
+                            <div class="plan-title">
+                                <span>アルコール飲み放題</span>
+                                <span class="plan-price">¥3,300</span>
+                            </div>
+                            <div class="plan-desc">60min 飲み放題</div>
+                        </label>
+                    </div>
+
+                    <div class="plan-card">
+                        <input type="radio" id="plan-can" name="plan" value="缶込飲み放題（60分 ¥3,800）">
+                        <label for="plan-can">
+                            <div class="plan-title">
+                                <span>缶込飲み放題</span>
+                                <span class="plan-price">¥3,800</span>
+                            </div>
+                            <div class="plan-desc">60min 缶類含む飲み放題</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 指名・お目当てのキャスト -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <span>✨</span> お目当てのキャスト
+                </div>
+
+                <div class="cast-select-grid">
+                    <div class="cast-option">
+                        <input type="radio" id="cast-none" name="cast" value="指定なし" checked>
+                        <label for="cast-none">
+                            <div style="width:60px; height:60px; border-radius:50%; background:#f0e6f5; display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#8b5cf6; margin-bottom:6px;">🐾</div>
+                            <span>指定なし</span>
+                        </label>
+                    </div>
+                    <div class="cast-option">
+                        <input type="radio" id="cast-yuinya" name="cast" value="ゆいにゃ">
+                        <label for="cast-yuinya">
+                            <img src="ゆいにゃさん.jpg" alt="ゆいにゃ">
+                            <span>ゆいにゃ</span>
+                        </label>
+                    </div>
+                    <div class="cast-option">
+                        <input type="radio" id="cast-fuchan" name="cast" value="ふちゃん">
+                        <label for="cast-fuchan">
+                            <img src="ふちゃんさん.jpg" alt="ふちゃん">
+                            <span>ふちゃん</span>
+                        </label>
+                    </div>
+                    <div class="cast-option">
+                        <input type="radio" id="cast-hime" name="cast" value="ひめ">
+                        <label for="cast-hime">
+                            <img src="ひめさん.jpg" alt="ひめ">
+                            <span>ひめ</span>
+                        </label>
+                    </div>
+                    <div class="cast-option">
+                        <input type="radio" id="cast-syuka" name="cast" value="しゅか">
+                        <label for="cast-syuka">
+                            <img src="しゅかさん.jpg" alt="しゅか">
+                            <span>しゅか</span>
+                        </label>
+                    </div>
+                    <div class="cast-option">
+                        <input type="radio" id="cast-yuriru" name="cast" value="ゆりる">
+                        <label for="cast-yuriru">
+                            <img src="ゆりるさん.jpg" alt="ゆりる">
+                            <span>ゆりる</span>
+                        </label>
+                    </div>
+                    <div class="cast-option">
+                        <input type="radio" id="cast-misaki" name="cast" value="みさき">
+                        <label for="cast-misaki">
+                            <img src="みさきさん.jpg" alt="みさき">
+                            <span>みさき</span>
+                        </label>
+                    </div>
+                    <div class="cast-option">
+                        <input type="radio" id="cast-kaede" name="cast" value="楓">
+                        <label for="cast-kaede">
+                            <img src="楓さん.jpg" alt="楓">
+                            <span>楓</span>
+                        </label>
+                    </div>
+                    <div class="cast-option">
+                        <input type="radio" id="cast-rei" name="cast" value="れい">
+                        <label for="cast-rei">
+                            <img src="れいさん.jpg" alt="れい">
+                            <span>れい</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. お客様情報 -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <span>👤</span> お客様情報
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col form-group">
+                        <label class="form-label" for="user-name">お名前 <span class="required">必須</span></label>
+                        <input type="text" id="user-name" name="name" class="form-control" placeholder="例：山田 太郎" required>
+                    </div>
+                    <div class="form-col form-group">
+                        <label class="form-label" for="user-kana">フリガナ <span class="required">必須</span></label>
+                        <input type="text" id="user-kana" name="kana" class="form-control" placeholder="例：ヤマダ タロウ" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col form-group">
+                        <label class="form-label" for="user-phone">電話番号 <span class="required">必須</span></label>
+                        <input type="tel" id="user-phone" name="phone" class="form-control" placeholder="例：090-1234-5678" required>
+                    </div>
+                    <div class="form-col form-group">
+                        <label class="form-label" for="user-email">メールアドレス <span class="required">必須</span></label>
+                        <input type="email" id="user-email" name="email" class="form-control" placeholder="example@email.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="user-sns">X (Twitter) / Instagram ID <span class="optional">任意</span></label>
+                    <input type="text" id="user-sns" name="sns" class="form-control" placeholder="例：@ChouchouDoll_oO">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="user-notes">ご要望・備考 <span class="optional">任意</span></label>
+                    <textarea id="user-notes" name="notes" class="form-control" rows="3" placeholder="お祝い・ご質問・ご要望などございましたらご記入ください。"></textarea>
+                </div>
+            </div>
+
+            <!-- 注意事項 -->
+            <div class="notes-box">
+                <strong>【ご予約時の注意事項】</strong>
+                <ul>
+                    <li>営業時間：18:00〜23:00</li>
+                    <li>お会計時にサービス料金10%を頂戴いたします。</li>
+                    <li>キャンセルの場合は、前日までに店舗SNSダイレクトメッセージまでご連絡ください。</li>
+                    <li>混雑状況により、お席のご希望に添えない場合がございます。</li>
+                </ul>
+            </div>
+
+            <div class="agree-check">
+                <label>
+                    <input type="checkbox" id="agree-check" required> 注意事項を確認し、同意しました
+                </label>
+            </div>
+
+            <div class="submit-btn-wrapper">
+                <button type="submit" class="submit-btn">予約を送信する</button>
+            </div>
+        </form>
+    </main>
+
+    <!-- 送信完了モーダル -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <h3>ご予約を受け付けました </h3>
+            <p id="modalMsg">ご予約ありがとうございます！<br>ご入力いただいたメールアドレス宛に、確認のご連絡を差し上げます。</p>
+            <button class="modal-close-btn" id="modalCloseBtn">閉じる</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="group-name">
+                しゅしゅど～る<br>
+                SNS各種アカウント<br>
+            </p>
+
+            <div class="sns-links">
+                <a href="https://x.com/ChouchouDoll_oO?s=20" class="sns-btn x-link" target="_blank">X (Twitter)</a>
+                <a href="https://instagram.com/chouchoudoll_o0?igsh=emo3YWc3NzVlOWl1" class="sns-btn insta-link" target="_blank">Instagram</a>
+                <a href="https://tiktok.com/@Chouchoudoll_o0" class="sns-btn tiktok-link" target="_blank">TikTok</a>
+            </div>
+
+            <p class="address">
+                〒160-0021<br>
+                東京都新宿区歌舞伎町2丁目14-12<br>
+                光凛ビル B1F<br>
+            </p>
+            <p class="copyright">&copy; しゅしゅど～る</p>
+        </div>
+    </footer>
+
+    <script>
     // ★ 店舗宛ての通知先メールアドレス
     const STORE_EMAIL = "Chouchoudoll2026@gmail.com"; 
 
@@ -156,3 +829,5 @@
         });
     }
 </script>
+</body>
+</html>
