@@ -455,7 +455,7 @@
             <!-- 2. ご利用プラン -->
             <div class="form-section">
                 <div class="form-section-title">
-                    <span>🍹</span> ご利用プラン
+                    <span>🍹</span> ご利用プラン(店舗で変更が可能です)
                 </div>
 
                 <div class="plan-options">
@@ -505,74 +505,18 @@
                 </div>
             </div>
 
-            <!-- 3. 指名・お目当てのキャスト -->
+            <!-- 3. 指名・お目当てのキャスト（※JavaScriptで動的生成） -->
             <div class="form-section">
                 <div class="form-section-title">
                     <span>✨</span> お目当てのキャスト
                 </div>
 
-                <div class="cast-select-grid">
+                <div class="cast-select-grid" id="cast-select-grid">
                     <div class="cast-option">
                         <input type="radio" id="cast-none" name="cast" value="指定なし" checked>
                         <label for="cast-none">
                             <div style="width:60px; height:60px; border-radius:50%; background:#f0e6f5; display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#8b5cf6; margin-bottom:6px;">🐾</div>
                             <span>指定なし</span>
-                        </label>
-                    </div>
-                    <div class="cast-option">
-                        <input type="radio" id="cast-yuinya" name="cast" value="ゆいにゃ">
-                        <label for="cast-yuinya">
-                            <img src="ゆいにゃさん.jpg" alt="ゆいにゃ">
-                            <span>ゆいにゃ</span>
-                        </label>
-                    </div>
-                    <div class="cast-option">
-                        <input type="radio" id="cast-fuchan" name="cast" value="ふちゃん">
-                        <label for="cast-fuchan">
-                            <img src="ふちゃんさん.jpg" alt="ふちゃん">
-                            <span>ふちゃん</span>
-                        </label>
-                    </div>
-                    <div class="cast-option">
-                        <input type="radio" id="cast-hime" name="cast" value="ひめ">
-                        <label for="cast-hime">
-                            <img src="ひめさん.jpg" alt="ひめ">
-                            <span>ひめ</span>
-                        </label>
-                    </div>
-                    <div class="cast-option">
-                        <input type="radio" id="cast-syuka" name="cast" value="しゅか">
-                        <label for="cast-syuka">
-                            <img src="しゅかさん.jpg" alt="しゅか">
-                            <span>しゅか</span>
-                        </label>
-                    </div>
-                    <div class="cast-option">
-                        <input type="radio" id="cast-yuriru" name="cast" value="ゆりる">
-                        <label for="cast-yuriru">
-                            <img src="ゆりるさん.jpg" alt="ゆりる">
-                            <span>ゆりる</span>
-                        </label>
-                    </div>
-                    <div class="cast-option">
-                        <input type="radio" id="cast-misaki" name="cast" value="みさき">
-                        <label for="cast-misaki">
-                            <img src="みさきさん.jpg" alt="みさき">
-                            <span>みさき</span>
-                        </label>
-                    </div>
-                    <div class="cast-option">
-                        <input type="radio" id="cast-kaede" name="cast" value="楓">
-                        <label for="cast-kaede">
-                            <img src="楓さん.jpg" alt="楓">
-                            <span>楓</span>
-                        </label>
-                    </div>
-                    <div class="cast-option">
-                        <input type="radio" id="cast-rei" name="cast" value="れい">
-                        <label for="cast-rei">
-                            <img src="れいさん.jpg" alt="れい">
-                            <span>れい</span>
                         </label>
                     </div>
                 </div>
@@ -609,7 +553,7 @@
 
                 <div class="form-group">
                     <label class="form-label" for="user-notes">ご要望・備考 <span class="optional">任意</span></label>
-                    <textarea id="user-notes" name="notes" class="form-control" rows="3" placeholder="お祝い・ご質問・ご要望などございましたらご記入ください。"></textarea>
+                    <textarea id="user-notes" name="notes" class="form-control" rows="3" placeholder="ご質問・ご要望などございましたらご記入ください。"></textarea>
                 </div>
             </div>
 
@@ -620,7 +564,7 @@
                     <li>営業時間：18:00〜23:00</li>
                     <li>お会計時にサービス料金10%を頂戴いたします。</li>
                     <li>キャンセルの場合は、前日までに店舗SNSダイレクトメッセージまでご連絡ください。</li>
-                    <li>混雑状況により、お席のご希望に添えない場合がございます。</li>
+                    <li>混雑状況により希望に添えない場合がございます。</li>
                 </ul>
             </div>
 
@@ -671,6 +615,58 @@
     // ★ 店舗宛ての通知先メールアドレス
     const STORE_EMAIL = "Chouchoudoll2026@gmail.com"; 
 
+    // 出勤キャストデータ
+    const castMembers = [
+        {
+            id: "cast-yuinya",
+            name: "ゆいにゃ",
+            image: "ゆいにゃさん.jpg",
+            workDays: ["2026-08-01", "2026-08-02","2026-08-03","2026-08-05","2026-08-07","2026-08-08","2026-08-09","2026-08-10","2026-08-11","2026-08-12","2026-08-14","2026-08-15"]
+        },
+        {
+            id: "cast-fuchan",
+            name: "ふちゃん",
+            image: "ふちゃんさん.jpg",
+            workDays: ["2026-08-01", "2026-08-03", "2026-08-07","2026-08-09","2026-08-11","2026-08-12","2026-08-14","2026-08-15"]
+        },
+        {
+            id: "cast-hime",
+            name: "ひめ",
+            image: "ひめさん.jpg",
+            workDays: ["2026-08-02", "2026-08-03","2026-08-05","2026-08-08","2026-08-10","2026-08-12"]
+        },
+        {
+            id: "cast-syuka",
+            name: "しゅか",
+            image: "しゅかさん.jpg",
+            workDays: ["2026-08-07"]
+        },
+        {
+            id: "cast-yuriru",
+            name: "ゆりる",
+            image: "ゆりるさん.jpg",
+            workDays: ["2026-08-01", "2026-08-02", "2026-08-05","2026-08-08","2026-08-09","2026-08-11","2026-08-14"]
+        },
+        {
+            id: "cast-misaki",
+            name: "みさき",
+            image: "みさきさん.jpg",
+            workDays: ["2026-08-10", "2026-08-11"]
+        },
+        {
+            id: "cast-kaede",
+            name: "楓",
+            image: "楓さん.jpg",
+            workDays: ["2026-08-02", "2026-08-05", "2026-08-08","2026-08-09","2026-08-12","2026-08-14","2026-08-15"]
+        },
+        {
+            id: "cast-rei",
+            name: "れい",
+            image: "れいさん.jpg",
+            workDays: ["2026-08-01", "2026-08-03","2026-08-07","2026-08-10","2026-08-15"]
+        }
+    ];
+
     // ハンバーガーメニュー制御
     const hamburger = document.getElementById('hamburger');
     const navMenu = document.getElementById('nav-menu');
@@ -682,14 +678,62 @@
         });
     }
 
-    // 本日以降の日付のみ選択可能にする
-    const dateInput = document.getElementById('res-date');
-    if (dateInput) {
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.setAttribute('min', today);
+    // YYYY-MM-DD形式の文字列を取得するヘルパー関数
+    function getFormattedDate(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
     }
 
-    // --- 9月12日のみ「1部・2部・3部」にする切り替え処理 ---
+    // ★ 本日から1ヶ月後までの日付制限を設定
+    const dateInput = document.getElementById('res-date');
+    if (dateInput) {
+        const today = new Date();
+        const minDate = getFormattedDate(today);
+
+        const maxDateObj = new Date(today);
+        maxDateObj.setMonth(maxDateObj.getMonth() + 1);
+        const maxDate = getFormattedDate(maxDateObj);
+
+        dateInput.setAttribute('min', minDate);
+        dateInput.setAttribute('max', maxDate);
+    }
+
+    // ★ 選択された日付に出勤しているキャストを表示する関数
+    function updateCastList(selectedDateStr) {
+        const container = document.getElementById('cast-select-grid');
+        if (!container) return;
+
+        let html = `
+            <div class="cast-option">
+                <input type="radio" id="cast-none" name="cast" value="指定なし" checked>
+                <label for="cast-none">
+                    <div style="width:60px; height:60px; border-radius:50%; background:#f0e6f5; display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#8b5cf6; margin-bottom:6px;">🐾</div>
+                    <span>指定なし</span>
+                </label>
+            </div>
+        `;
+
+        if (selectedDateStr) {
+            const workingCasts = castMembers.filter(cast => cast.workDays.includes(selectedDateStr));
+            workingCasts.forEach(cast => {
+                html += `
+                    <div class="cast-option">
+                        <input type="radio" id="${cast.id}" name="cast" value="${cast.name}">
+                        <label for="${cast.id}">
+                            <img src="${cast.image}" alt="${cast.name}">
+                            <span>${cast.name}</span>
+                        </label>
+                    </div>
+                `;
+            });
+        }
+
+        container.innerHTML = html;
+    }
+
+    // --- 9月12日イベント＆キャスト一覧の更新切り替え処理 ---
     const timeSelect = document.getElementById('res-time');
     const labelText = document.getElementById('label-text');
     const eventNote = document.getElementById('event-note');
@@ -717,6 +761,10 @@
     if (dateInput) {
         dateInput.addEventListener('change', (e) => {
             const val = e.target.value; // YYYY-MM-DD
+
+            // 出勤キャスト選択肢の更新
+            updateCastList(val);
+
             if (!val) return;
 
             const parts = val.split('-');
@@ -757,31 +805,27 @@
             }
 
             // 入力データ取得
-            const date = document.getElementById('res-date').value; // 例: 2026-08-15
-            const time = document.getElementById('res-time').value; // 例: 18:00
+            const date = document.getElementById('res-date').value;
+            const time = document.getElementById('res-time').value;
             const duration = document.getElementById('res-duration').value;
             const guests = document.getElementById('res-guests').value;
             const name = document.getElementById('user-name').value;
             const userEmail = document.getElementById('user-email').value;
 
-            // ★ Gmail/スマホで自動リンク化させるための「日本語日時フォーマット」を生成
             let formattedDateTime = "";
             if (date) {
-                const parts = date.split('-'); // ["2026", "08", "15"]
+                const parts = date.split('-');
                 formattedDateTime = `${parts[0]}年${parseInt(parts[1])}月${parseInt(parts[2])}日 ${time}`;
             }
 
             // 送信用データの準備
             const formData = new FormData(form);
             
-            // ★ カレンダー自動認識用の統合日時フィールドを追加
             formData.append("【カレンダー用】ご来店日時", formattedDateTime);
-
             formData.append("_subject", `【しゅしゅどーる】Web予約リクエスト (${name}様 / ${formattedDateTime})`);
             formData.append("_template", "table"); 
             formData.append("_captcha", "false");
 
-            // お客様宛への自動返信メールメッセージ本文
             formData.append("_autorespond", `${name} 様\n\nご来店予約のリクエストを承りました。\n内容を確認の上、店舗より折り返しご連絡いたします。\n\n【予約内容】\n・ご来店日時：${formattedDateTime}\n・人数：${guests}\n・予定滞在時間：${duration}\n\n--------------------\nしゅしゅど～る\n〒160-0021 東京都新宿区歌舞伎町2丁目14-12 光凛ビル B1F`);
             
             formData.append("_replyto", userEmail);
@@ -793,7 +837,6 @@
             })
             .then(response => response.json())
             .then(data => {
-                // 送信成功時のモーダル表示
                 document.getElementById('modalMsg').innerHTML = `
                     ${name} 様<br><br>
                     <strong>${formattedDateTime}</strong><br>
@@ -819,6 +862,7 @@
         modalCloseBtn.addEventListener('click', () => {
             modal.style.display = 'none';
             form.reset();
+            updateCastList(""); // キャスト選択肢の初期化
             if (labelText) labelText.textContent = 'ご来店時間';
             if (timeSelect) timeSelect.innerHTML = normalOptionsHTML;
             if (eventNote) eventNote.style.display = 'none';
