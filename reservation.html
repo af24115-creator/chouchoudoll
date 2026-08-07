@@ -438,7 +438,7 @@
                         </select>
                     </div>
 
-                    <!-- 予定滞在時間（追加） -->
+                    <!-- 予定滞在時間 -->
                     <div class="form-col form-group">
                         <label class="form-label" for="res-duration">予定滞在時間 <span class="required">必須</span></label>
                         <select id="res-duration" name="duration" class="form-control" required>
@@ -643,7 +643,7 @@
     <!-- 送信完了モーダル -->
     <div class="modal-overlay" id="successModal">
         <div class="modal-content">
-            <h3>ご予約を受け付けました </h3>
+            <h3>ご予約を受け付けました 💖</h3>
             <p id="modalMsg">ご予約ありがとうございます！<br>ご入力いただいたメールアドレス宛に、確認のご連絡を差し上げます。</p>
             <button class="modal-close-btn" id="modalCloseBtn">閉じる</button>
         </div>
@@ -672,8 +672,8 @@
     </footer>
 
     <script>
+    // ★ 店舗宛ての通知先メールアドレス
     const STORE_EMAIL = "Chouchoudoll2026@gmail.com"; 
-
 
     // ハンバーガーメニュー制御
     const hamburger = document.getElementById('hamburger');
@@ -749,9 +749,9 @@
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            // 店舗メールアドレス未変更チェック
-            if (STORE_EMAIL === "") {
-                alert("【設定エラー】店舗のメールアドレスが設定されていません。JSコード内の STORE_EMAIL を修正してください。");
+            // 店舗メールアドレス未設定チェック
+            if (!STORE_EMAIL || STORE_EMAIL === "") {
+                alert("【設定エラー】店舗のメールアドレスが設定されていません。");
                 return;
             }
 
@@ -761,18 +761,25 @@
                 submitBtn.textContent = '送信中...';
             }
 
-            // 入力データ取得（完了モーダル用）
+            // 入力データ取得（完了モーダル用・自動返信本文用）
             const date = document.getElementById('res-date').value;
             const time = document.getElementById('res-time').value;
             const duration = document.getElementById('res-duration').value;
             const guests = document.getElementById('res-guests').value;
             const name = document.getElementById('user-name').value;
+            const userEmail = document.getElementById('user-email').value;
 
             // 送信用データの準備
             const formData = new FormData(form);
             formData.append("_subject", `【しゅしゅどーる】Web予約リクエスト (${name}様)`);
             formData.append("_template", "table"); 
-            formData.append("_captcha", "false");
+            formData.append("_captcha", "false"); // キャプチャ認証を無効化
+
+            // ★ お客様宛への自動返信メールメッセージ本文を設定
+            formData.append("_autorespond", `${name} 様\n\nご来店予約のリクエストを承りました。\n内容を確認の上、店舗より折り返しご連絡いたします。\n\n【予約内容】\n・ご来店日：${date}\n・時間：${time}\n・人数：${guests}\n・予定滞在時間：${duration}\n\n--------------------\nしゅしゅど～る\n〒160-0021 東京都新宿区歌舞伎町2丁目14-12 光凛ビル B1F`);
+            
+            // ★ 返信先をお客様のアドレスに指定
+            formData.append("_replyto", userEmail);
 
             // FormSubmit APIを通じて指定メールアドレス宛へ送信
             fetch(`https://formsubmit.co/ajax/${STORE_EMAIL}`, {
@@ -814,3 +821,5 @@
         });
     }
 </script>
+</body>
+</html>
