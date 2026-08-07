@@ -93,6 +93,53 @@
             color: #ffffff;
             box-shadow: 0 4px 10px rgba(192, 132, 252, 0.4);
         }
+
+        /* --- メインビジュアル内の予約CTAボタン --- */
+        .main-reservation-cta {
+            margin-top: 25px;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff8da1 0%, #c084fc 100%);
+            color: #ffffff;
+            padding: 14px 36px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(255, 141, 161, 0.4);
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 6px 20px rgba(192, 132, 252, 0.6);
+            color: #ffffff;
+        }
+
+        /* --- 画面右下の固定予約ボタン --- */
+        .floating-reservation-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 999;
+            background: linear-gradient(135deg, #ff8da1 0%, #c084fc 100%);
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            text-decoration: none;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .floating-reservation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 141, 161, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -117,33 +164,43 @@
                 <li><a href="#system">SYSTEM</a></li>
                 <li><a href="profile.html">PROFILE</a></li>
                 <li><a href="#access">ACCESS</a></li>
+                <li><a href="reservation.html">RESERVATION</a></li>
                 <li><a href="#shop">SHOP</a></li> 
             </ul>
         </nav>
     </header>
 
+    <!-- HOME (メインビジュアル) -->
     <section id="home" class="main-visual">
         <div class="visual-text">
             <img src="透過ロゴ.png" alt="しゅしゅどーる ロゴ" class="main-logo-img">
             <p>open 18:00~23:00</p>
+            
+            <!-- ご予約ボタン（メイン） -->
+            <div class="main-reservation-cta">
+                <a href="reservation.html" class="cta-btn">ご予約はこちらから ➔</a>
+            </div>
         </div>
     </section>
 
+    <!-- 画面右下に常時表示される追従予約ボタン -->
+    <a href="reservation.html" class="floating-reservation-btn">📅 ご予約はこちら</a>
+
     <section id="news" class="container">
-    <h2 class="section-title">NEWS</h2>
-    <ul class="news-list">
-        <li>
-            <a href="news.html" class="news-link">
-                <span class="date">2026.05.25</span>
-                <span class="category">INFO</span>
-                <span class="news-text">ゆいにゃさんが本日からP衣装となります！</span>
-            </a>
-        </li>
-    </ul>
-    <div class="view-more" style="margin-top: 30px;">
-        <a href="album.html">EVENT ALBUMを見る</a>
-    </div>
-</section>
+        <h2 class="section-title">NEWS</h2>
+        <ul class="news-list">
+            <li>
+                <a href="news.html" class="news-link">
+                    <span class="date">2026.05.25</span>
+                    <span class="category">INFO</span>
+                    <span class="news-text">ゆいにゃさんが本日からP衣装となります！</span>
+                </a>
+            </li>
+        </ul>
+        <div class="view-more" style="margin-top: 30px;">
+            <a href="album.html">EVENT ALBUMを見る</a>
+        </div>
+    </section>
 
     <!-- SCHEDULE セクション（白い枠背景を追加） -->
     <section id="schedule" class="container">
@@ -253,8 +310,6 @@
             <a href="https://chouchoudoll.kawaiishop.jp/items/139108277" target="_blank">a shot of ?</a>
         </div>
     </section>
-
-
 
     <footer class="footer">
         <div class="footer-content">
