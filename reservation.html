@@ -749,6 +749,22 @@
         }
     });
 
+    // ★ 入力文字列の相違箇所（何文字目がどう違うか）を特定する関数
+    function getMismatchInfo(original, confirm) {
+        if (original === confirm) return null;
+
+        const minLen = Math.min(original.length, confirm.length);
+        for (let i = 0; i < minLen; i++) {
+            if (original[i] !== confirm[i]) {
+                return `${i + 1}文字目（もと：'${original[i]}' / 確認用：'${confirm[i]}'）`;
+            }
+        }
+        if (original.length !== confirm.length) {
+            return `文字数（もと：${original.length}文字 / 確認用：${confirm.length}文字）`;
+        }
+        return "不一致箇所があります！";
+    }
+
     // ハンバーガーメニュー制御
     const hamburger = document.getElementById('hamburger');
     const navMenu = document.getElementById('nav-menu');
@@ -899,19 +915,25 @@
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            // ★ 入力一致チェック（電話番号 & メールアドレス）
+            // ★ 電話番号の不一致箇所チェック
             const phone = document.getElementById('user-phone').value;
             const phoneConfirm = document.getElementById('user-phone-confirm').value;
-            const email = document.getElementById('user-email').value;
-            const emailConfirm = document.getElementById('user-email-confirm').value;
+            const phoneDiff = getMismatchInfo(phone, phoneConfirm);
 
-            if (phone !== phoneConfirm) {
-                alert('入力された電話番号と確認用電話番号が一致していません。');
+            if (phoneDiff) {
+                alert(`【電話番号が一致していません】\n\nもとの入力：${phone}\n確認用入力：${phoneConfirm}\n相違箇所 ：${phoneDiff}\n\n入力内容をご確認ください。`);
+                document.getElementById('user-phone-confirm').focus();
                 return;
             }
 
-            if (email !== emailConfirm) {
-                alert('入力されたメールアドレスと確認用メールアドレスが一致していません。');
+            // ★ メールアドレスの不一致箇所チェック
+            const email = document.getElementById('user-email').value;
+            const emailConfirm = document.getElementById('user-email-confirm').value;
+            const emailDiff = getMismatchInfo(email, emailConfirm);
+
+            if (emailDiff) {
+                alert(`【メールアドレスが一致していません】\n\nもとの入力：${email}\n確認用入力：${emailConfirm}\n相違箇所 ：${emailDiff}\n\n入力内容をご確認ください。`);
+                document.getElementById('user-email-confirm').focus();
                 return;
             }
 
