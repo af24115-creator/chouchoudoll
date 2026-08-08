@@ -797,4 +797,42 @@ body {
         margin-top: 6px;
     }
     
+    /* 画像コンテナを基準位置に設定 */
+.profile-image {
+    position: relative;
+    overflow: hidden; /* はみ出し部分を整形 */
+}
+
+
+}
+/* ==========================================
+出勤キャスト用 リボンバッジ（PC・スマホ共通）
+========================================= */
+.profile-image {
+    position: relative !important;
+}
+
+/* ぷっくり可愛いリボンバッジ */
+.work-ribbon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 5px 12px;
+    border-radius: 20px;
+    box-shadow: 0 3px 8px rgba(255, 117, 140, 0.4);
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    letter-spacing: 1px;
+}
+
+/* 自動で先頭にリボンアイコンを付与 */
+.work-ribbon::before {
+    content: "🎀 ";
+    margin-right: 3px;
+    font-size: 12px;
 }

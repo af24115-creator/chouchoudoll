@@ -157,7 +157,8 @@
                 </div>
             </div>
 
-        </div> <div class="view-more" style="margin-top: 50px;">
+        </div> 
+        <div class="view-more" style="margin-top: 50px;">
             <a href="index.html">HOMEへ戻る</a>
         </div>
     </section>
@@ -166,25 +167,65 @@
         <p>&copy; しゅしゅどーる</p>
     </footer>
 
-    <!-- ハンバーガー -->
+    <!-- ハンバーガーメニューの処理 -->
     <script>
     const hamburger = document.getElementById('hamburger');
     const navMenu = document.getElementById('nav-menu');
 
-    // ボタンをクリックしたら 'active' クラスを付け外しする
     hamburger.addEventListener('click', () => {
         hamburger.classList.toggle('active');
         navMenu.classList.toggle('active');
     });
 
-    // メニュー内のリンクをクリックしたらメニューを閉じる
     document.querySelectorAll('.nav ul li a').forEach(link => {
         link.addEventListener('click', () => {
             hamburger.classList.remove('active');
             navMenu.classList.remove('active');
         });
     });
-</script>
+    </script>
 
+    <!-- 1. 出勤データファイル(casts.js)を読み込む -->
+    <script src="casts.js"></script>
+
+    <!-- 2. 自動で出勤キャストにリボンをつける処理 -->
+    <script>
+    function getTodayDateString() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const today = getTodayDateString();
+
+        // 本日出勤キャスト名の一覧を取得
+        const workingCastNames = castMembers
+            .filter(cast => cast.workDays.includes(today))
+            .map(cast => cast.name);
+
+        const profileItems = document.querySelectorAll('.profile-item');
+
+        profileItems.forEach(item => {
+            const nameElement = item.querySelector('h3');
+            if (!nameElement) return;
+
+            const castName = nameElement.textContent.trim();
+
+            // 本日出勤の場合のみ画像上にリボン要素を追加
+            if (workingCastNames.includes(castName)) {
+                const imageContainer = item.querySelector('.profile-image');
+                if (imageContainer) {
+                    const ribbon = document.createElement('span');
+                    ribbon.className = 'work-ribbon';
+                    ribbon.textContent = '出勤';
+                    imageContainer.appendChild(ribbon);
+                }
+            }
+        });
+    });
+    </script>
 </body>
 </html>
