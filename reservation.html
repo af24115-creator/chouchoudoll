@@ -762,7 +762,7 @@
         if (original.length !== confirm.length) {
             return `文字数（もと：${original.length}文字 / 確認用：${confirm.length}文字）`;
         }
-        return "不一致箇所があります！";
+        return "不一致箇所あり";
     }
 
     // ハンバーガーメニュー制御
@@ -784,18 +784,35 @@
         return `${y}-${m}-${d}`;
     }
 
-    // ★ 本日から1ヶ月後までの日付制限を設定
+    // ★ 日付選択の範囲設定 ＆ スマホの枠外選択をリアルタイムで弾く処理
     const dateInput = document.getElementById('res-date');
     if (dateInput) {
         const today = new Date();
         const minDate = getFormattedDate(today);
 
         const maxDateObj = new Date(today);
-        maxDateObj.setMonth(maxDateObj.getMonth() + 2);
+        // ※今日から1ヶ月先までにする場合は「+ 1」、2ヶ月先までなら「+ 2」に設定
+        maxDateObj.setMonth(maxDateObj.getMonth() + 1);
         const maxDate = getFormattedDate(maxDateObj);
 
         dateInput.setAttribute('min', minDate);
         dateInput.setAttribute('max', maxDate);
+
+        // ★ スマホ（iOS Safari等）のカレンダーで範囲外がタップされた時の強制ガード
+        dateInput.addEventListener('change', (e) => {
+            const val = e.target.value; // YYYY-MM-DD
+            if (!val) return;
+
+            if (val < minDate || val > maxDate) {
+                alert(`ご予約可能な日付は【${minDate} 〜 ${maxDate}】となります。`);
+                e.target.value = ''; // 選択をリセット
+                updateCastList(""); // キャスト選択肢の初期化
+                return;
+            }
+
+            // 正常範囲の場合のみ各種切り替え処理を実行
+            handleDateChange(val);
+        });
     }
 
     // ★ 選択された日付に出勤しているキャストを表示する関数
@@ -861,48 +878,44 @@
         <option value="3部">3部</option>
     `;
 
-    if (dateInput) {
-        dateInput.addEventListener('change', (e) => {
-            const val = e.target.value; // YYYY-MM-DD
+    function handleDateChange(val) {
+        // 出勤キャスト選択肢の更新
+        updateCastList(val);
 
-            // 出勤キャスト選択肢の更新
-            updateCastList(val);
+        if (!val) {
+            if (fixedBg) fixedBg.classList.remove('event-date-0912');
+            return;
+        }
 
-            if (!val) {
-                if (fixedBg) fixedBg.classList.remove('event-date-0912');
-                return;
-            }
+        const parts = val.split('-');
+        const month = parts[1];
+        const day = parts[2];
 
-            const parts = val.split('-');
-            const month = parts[1];
-            const day = parts[2];
+        if (month === '09' && day === '12') {
+            // 背景画像をイベント用に切り替え
+            if (fixedBg) fixedBg.classList.add('event-date-0912');
 
-            if (month === '09' && day === '12') {
-                // 背景画像をイベント用に切り替え
-                if (fixedBg) fixedBg.classList.add('event-date-0912');
+            if (labelText) labelText.textContent = 'ご来店区分';
+            if (timeSelect) timeSelect.innerHTML = specialPartOptionsHTML;
+            if (eventNote) eventNote.style.display = 'block';
 
-                if (labelText) labelText.textContent = 'ご来店区分';
-                if (timeSelect) timeSelect.innerHTML = specialPartOptionsHTML;
-                if (eventNote) eventNote.style.display = 'block';
+            // 9/12専用表示：ご利用プランをなくし注文メニュー（複数選択可）を表示
+            if (planSectionTitle) planSectionTitle.innerHTML = '<span>🛍️</span> 注文メニュー（複数選択可）';
+            if (normalPlanOptions) normalPlanOptions.style.display = 'none';
+            if (specialOrderOptions) specialOrderOptions.style.display = 'grid';
+        } else {
+            // 通常日の背景画像に戻す
+            if (fixedBg) fixedBg.classList.remove('event-date-0912');
 
-                // 9/12専用表示：ご利用プランをなくし注文メニュー（複数選択可）を表示
-                if (planSectionTitle) planSectionTitle.innerHTML = '<span>🛍️</span> 注文メニュー（複数選択可）';
-                if (normalPlanOptions) normalPlanOptions.style.display = 'none';
-                if (specialOrderOptions) specialOrderOptions.style.display = 'grid';
-            } else {
-                // 通常日の背景画像に戻す
-                if (fixedBg) fixedBg.classList.remove('event-date-0912');
+            if (labelText) labelText.textContent = 'ご来店時間';
+            if (timeSelect) timeSelect.innerHTML = normalOptionsHTML;
+            if (eventNote) eventNote.style.display = 'none';
 
-                if (labelText) labelText.textContent = 'ご来店時間';
-                if (timeSelect) timeSelect.innerHTML = normalOptionsHTML;
-                if (eventNote) eventNote.style.display = 'none';
-
-                // 通常日表示：ご利用プランを表示し注文メニューを隠す
-                if (planSectionTitle) planSectionTitle.innerHTML = '<span>🍹</span> ご利用プラン(店舗で変更が可能です)';
-                if (normalPlanOptions) normalPlanOptions.style.display = 'grid';
-                if (specialOrderOptions) specialOrderOptions.style.display = 'none';
-            }
-        });
+            // 通常日表示：ご利用プランを表示し注文メニューを隠す
+            if (planSectionTitle) planSectionTitle.innerHTML = '<span>🍹</span> ご利用プラン(店舗で変更が可能です)';
+            if (normalPlanOptions) normalPlanOptions.style.display = 'grid';
+            if (specialOrderOptions) specialOrderOptions.style.display = 'none';
+        }
     }
 
     // --- メール送信＆フォーム送信処理（GAS連携） ---
