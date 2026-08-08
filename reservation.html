@@ -597,14 +597,27 @@
                     </div>
                 </div>
 
+                <!-- 電話番号・確認用電話番号 -->
                 <div class="form-row">
                     <div class="form-col form-group">
                         <label class="form-label" for="user-phone">電話番号 <span class="required">必須</span></label>
-                        <input type="tel" id="user-phone" name="phone" class="form-control" placeholder="例：090-1234-5678" required>
+                        <input type="tel" id="user-phone" name="phone" class="form-control" placeholder="例：09012345678" maxlength="11" required>
                     </div>
+                    <div class="form-col form-group">
+                        <label class="form-label" for="user-phone-confirm">電話番号（確認用） <span class="required">必須</span></label>
+                        <input type="tel" id="user-phone-confirm" class="form-control" placeholder="例：09012345678" maxlength="11" required>
+                    </div>
+                </div>
+
+                <!-- メールアドレス・確認用メールアドレス -->
+                <div class="form-row">
                     <div class="form-col form-group">
                         <label class="form-label" for="user-email">メールアドレス <span class="required">必須</span></label>
                         <input type="email" id="user-email" name="email" class="form-control" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-col form-group">
+                        <label class="form-label" for="user-email-confirm">メールアドレス（確認用） <span class="required">必須</span></label>
+                        <input type="email" id="user-email-confirm" class="form-control" placeholder="example@email.com" required>
                     </div>
                 </div>
 
@@ -725,6 +738,16 @@
             workDays: ["2026-08-01", "2026-08-03","2026-08-07","2026-08-10","2026-08-15"]
         }
     ];
+
+    // ★ 電話番号入力欄（本体・確認用の双方）：数字のみ＆最大11桁の制限処理
+    ['user-phone', 'user-phone-confirm'].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 11);
+            });
+        }
+    });
 
     // ハンバーガーメニュー制御
     const hamburger = document.getElementById('hamburger');
@@ -876,6 +899,22 @@
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
+            // ★ 入力一致チェック（電話番号 & メールアドレス）
+            const phone = document.getElementById('user-phone').value;
+            const phoneConfirm = document.getElementById('user-phone-confirm').value;
+            const email = document.getElementById('user-email').value;
+            const emailConfirm = document.getElementById('user-email-confirm').value;
+
+            if (phone !== phoneConfirm) {
+                alert('入力された電話番号と確認用電話番号が一致していません。');
+                return;
+            }
+
+            if (email !== emailConfirm) {
+                alert('入力されたメールアドレスと確認用メールアドレスが一致していません。');
+                return;
+            }
+
             // 二重送信防止
             if (submitBtn) {
                 submitBtn.disabled = true;
@@ -897,17 +936,15 @@
 
             // 送信用データの準備
             const formData = new FormData(form);
-            const params = new URLSearchParams(formData);
-
 
             // ★ 作成したGASのウェブアプリURLを指定（※ご自身のURLに変更してください）
             const GAS_URL = "https://script.google.com/macros/s/AKfycbwx7rLvCIWAQIglRKs7Sc6VpfdDxB0rHKbpbQIGhBzMU1GIyRdKxFcRlQWIKoUo5IWI/exec"; 
 
             // ★ FormData を URLSearchParams に変換して送信
-fetch(GAS_URL, {
-    method: "POST",
-    body: new URLSearchParams(formData)
-})
+            fetch(GAS_URL, {
+                method: "POST",
+                body: new URLSearchParams(formData)
+            })
             .then(response => response.json())
             .then(data => {
                 if (data.result === "success") {
