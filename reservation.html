@@ -901,10 +901,11 @@
             // ★ 作成したGASのウェブアプリURLを指定（※ご自身のURLに変更してください）
             const GAS_URL = "https://script.google.com/macros/s/AKfycbxeXGUF6L1dBk3P5Gm8bpLUiXWtuxVQAXnwm1uNmFouhh_rSbcSgkoOm77t1ZXA9B3F/exec"; 
 
-            fetch(GAS_URL, {
-                method: "POST",
-                body: formData
-            })
+            // ★ FormData を URLSearchParams に変換して送信
+fetch(GAS_URL, {
+    method: "POST",
+    body: new URLSearchParams(formData)
+})
             .then(response => response.json())
             .then(data => {
                 if (data.result === "success") {
