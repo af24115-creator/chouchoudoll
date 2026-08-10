@@ -764,7 +764,7 @@
 
             // 今日より過去、またはキャストが出勤していない日の場合は弾く
             if (!hasCastWorking || val < todayStr) {
-                alert('選択された日付はキャストの出勤予定がないため（店休日）、ご予約いただけません。');
+                alert('選択された日付は店休日のため、ご予約いただけません。');
                 e.target.value = ''; // 選択をクリア
                 updateCastList("");  // キャスト選択肢の初期化
                 handleDateChange("");// 画面表示初期化
@@ -848,7 +848,7 @@
             if (labelText) labelText.textContent = 'ご来店時間';
             if (timeSelect) timeSelect.innerHTML = normalOptionsHTML;
             if (eventNote) eventNote.style.display = 'none';
-            if (planSectionTitle) planSectionTitle.innerHTML = '<span>🍹</span> ご利用プラン(店舗で変更が可能です)';
+            if (planSectionTitle) planSectionTitle.innerHTML = '<span>🍹</span> ご利用予定のプラン(店舗で変更が可能です)';
             if (normalPlanOptions) normalPlanOptions.style.display = 'grid';
             if (specialOrderOptions) specialOrderOptions.style.display = 'none';
             return;
