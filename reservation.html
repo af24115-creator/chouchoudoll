@@ -738,33 +738,48 @@
         new Set(castMembers.flatMap(cast => cast.workDays || []))
     ).sort();
 
-    // ★ 日付選択の範囲設定 ＆ キャストが出勤していない日（店休日）をリアルタイムで弾く処理
+    // ★ 現在キャストの出勤が登録されている「一番遅い日付（最新のシフト公開日）」を特定
+    const latestWorkDate = availableDates.length > 0 ? availableDates[availableDates.length - 1] : "";
+
+    // ★ 日付選択の範囲設定 ＆ 店休日と未定日のアラート分岐ガード処理
     const dateInput = document.getElementById('res-date');
     if (dateInput) {
         const todayStr = getFormattedDate(new Date());
 
-        // 今日以降の出勤日のみ抽出
-        const futureWorkDays = availableDates.filter(d => d >= todayStr);
+        // 最低選択可能日は今日
+        dateInput.setAttribute('min', todayStr);
 
-        if (futureWorkDays.length > 0) {
-            // 今日以降の最初の出勤日 〜 出勤登録がある最終日をカレンダーの範囲に設定
-            dateInput.setAttribute('min', futureWorkDays[0]);
-            dateInput.setAttribute('max', futureWorkDays[futureWorkDays.length - 1]);
-        } else {
-            dateInput.setAttribute('min', todayStr);
-        }
+        // カレンダーの選択上限を今日から2ヶ月先に設定（未定日を選択してアラートが出せるようにする）
+        const maxDateObj = new Date();
+        maxDateObj.setMonth(maxDateObj.getMonth() + 2);
+        dateInput.setAttribute('max', getFormattedDate(maxDateObj));
 
-        // ★ 日付選択時のリアルタイムガード処理
+        // ★ 日付選択時のリアルタイム判定処理
         dateInput.addEventListener('change', (e) => {
             const val = e.target.value; // YYYY-MM-DD
             if (!val) return;
 
-            // 1人でもキャストの出勤登録があるかチェック
+            // 過去の日付を弾く
+            if (val < todayStr) {
+                alert('過去の日付はご予約いただけません。');
+                e.target.value = '';
+                updateCastList("");
+                handleDateChange("");
+                return;
+            }
+
+            // 1人でもキャストが出勤しているか判定
             const hasCastWorking = availableDates.includes(val);
 
-            // 今日より過去、またはキャストが出勤していない日の場合は弾く
-            if (!hasCastWorking || val < todayStr) {
-                alert('選択された日付は店休日のため、ご予約いただけません。');
+            if (!hasCastWorking) {
+                // シフト登録済み範囲内の日付なのにキャストがいない ＝ 「店休日」
+                if (latestWorkDate && val <= latestWorkDate) {
+                    alert('選択された日付は【店休日】のため、ご予約いただけません。');
+                } else {
+                    // 最新のシフト登録日より未来の日付 ＝ 「予定未定」
+                    alert('選択された日付の出勤スケジュールは【未定】のため、まだご予約いただけません。\nスケジュール公開まで今しばらくお待ちください。');
+                }
+                
                 e.target.value = ''; // 選択をクリア
                 updateCastList("");  // キャスト選択肢の初期化
                 handleDateChange("");// 画面表示初期化
@@ -879,7 +894,7 @@
             if (eventNote) eventNote.style.display = 'none';
 
             // 通常日表示：ご利用プランを表示し注文メニューを隠す
-            if (planSectionTitle) planSectionTitle.innerHTML = '<span>🍹</span> ご利用予定のプラン(店舗で変更が可能です)';
+            if (planSectionTitle) planSectionTitle.innerHTML = '<span>🍹</span> ご利用プラン(店舗で変更が可能です)';
             if (normalPlanOptions) normalPlanOptions.style.display = 'grid';
             if (specialOrderOptions) specialOrderOptions.style.display = 'none';
         }
