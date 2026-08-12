@@ -3,231 +3,1752 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ご来店予約システム</title>
+    <title>RESERVATION | しゅしゅどーる</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-            color: #333;
+        /* --- 予約フォーム専用のスタイル拡張 --- */
+
+        /* ★ 9月12日専用：横画面（PCなど）用の背景画像 */
+        .fixed-background.event-date-0912 {
+            background-image: url('ゆ生誕よこ.png') !important; /* ※横画像（PC用）のパス */
+            background-size: cover;
+            background-position: center;
+            transition: background-image 0.5s ease;
         }
 
-        h1 {
+        /* ★ 9月12日専用：縦画面・スマホ（画面幅768px以下または縦長画面）用の背景画像 */
+        @media (max-width: 768px), (orientation: portrait) {
+            .fixed-background.event-date-0912 {
+                background-image: url('ゆ生誕.jpg') !important; /* ※縦画像（スマホ用）のパス */
+            }
+        }
+
+        .reservation-container {
+            background-color: rgba(255, 255, 255, 0.92);
+            margin: 50px auto;
+            padding: 50px 8%;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            max-width: 900px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.5s ease;
+        }
+
+        .form-header-desc {
             text-align: center;
-            font-size: 1.5rem;
+            color: #5c4362;
+            font-size: 0.95rem;
+            margin-bottom: 35px;
+            line-height: 1.8;
+            transition: color 0.5s ease;
+        }
+
+        .form-section {
+            background: #ffffff;
+            border: 1px solid #ffe4ee;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(255, 158, 187, 0.08);
+            transition: all 0.5s ease;
+        }
+
+        .form-section-title {
+            font-size: 1.15rem;
+            color: #ff4d94;
+            border-bottom: 2px solid #ffb6c1;
+            padding-bottom: 8px;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            transition: all 0.5s ease;
         }
 
         .form-group {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
-        label {
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
             display: block;
             font-weight: bold;
+            color: #4a3b52;
             margin-bottom: 8px;
+            font-size: 0.95rem;
+            transition: color 0.5s ease;
         }
 
-        input[type="date"] {
+        /* 必須・任意バッジ共通スタイル */
+        .required {
+            background-color: #ff4d94;
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            font-weight: normal;
+            transition: background-color 0.5s ease;
+            display: inline-block;
+        }
+
+        .optional {
+            background-color: #a3a3a3;
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            font-weight: normal;
+            display: inline-block;
+        }
+
+        .form-control {
             width: 100%;
-            padding: 12px;
+            padding: 12px 16px;
+            border: 1.5px solid #e2d5ed;
+            border-radius: 12px;
             font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            color: #333;
+            background-color: #faf8fd;
+            transition: all 0.3s ease;
             box-sizing: border-box;
-            background-color: #fff;
-            -webkit-appearance: none; /* iOSのスタイル調整 */
+            outline: none;
         }
 
-        .cast-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        .form-control:focus {
+            border-color: #c084fc;
+            background-color: #ffffff;
+            box-shadow: 0 0 8px rgba(192, 132, 252, 0.3);
+        }
+
+        .form-row {
+            display: flex;
             gap: 15px;
-            margin-top: 15px;
+            flex-wrap: wrap;
         }
 
-        .cast-card {
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        .form-col {
+            flex: 1;
+            min-width: 220px;
         }
 
-        .cast-card img {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 6px;
-            background-color: #eee;
-        }
-
-        .cast-name {
-            margin-top: 8px;
+        /* イベント用注記 */
+        .event-note {
+            font-size: 0.85rem;
+            color: #ff4d94;
             font-weight: bold;
-            font-size: 0.9rem;
+            margin-top: 6px;
+            display: none;
+            transition: color 0.5s ease;
         }
 
-        .no-data {
+        /* ラジオボタン / チェックボックス / プラン選択カード */
+        .plan-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        .plan-card {
+            position: relative;
+            background: #fcf9ff;
+            border: 2px solid #ebdcf5;
+            border-radius: 14px;
+            transition: all 0.25s ease;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .plan-card input[type="radio"],
+        .plan-card input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .plan-card label {
+            display: block;
+            padding: 14px 16px;
+            cursor: pointer;
+            height: 100%;
+            box-sizing: border-box;
+            border-radius: 12px;
+        }
+
+        /* チェック時のスタイリング */
+        .plan-card.is-checked,
+        .plan-card:has(input[type="radio"]:checked) {
+            border-color: #ff8da1;
+            background: linear-gradient(135deg, rgba(255,240,245,0.9) 0%, rgba(245,235,255,0.9) 100%);
+            box-shadow: 0 4px 12px rgba(255, 158, 187, 0.25);
+        }
+
+        .plan-title {
+            font-weight: bold;
+            color: #4a3b52;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            transition: color 0.5s ease;
+        }
+
+        .plan-price {
+            color: #ff4d94;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: color 0.5s ease;
+        }
+
+        .plan-desc {
+            font-size: 0.8rem;
+            color: #776880;
+            margin-top: 4px;
+            transition: color 0.5s ease;
+        }
+
+        /* 数量選択枠のスタイリング */
+        .qty-container {
+            padding: 8px 16px 12px 16px;
+            margin-top: -4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px dashed #ebdcf5;
+            transition: border-color 0.5s ease;
+        }
+
+        .qty-label {
+            font-size: 0.82rem;
+            font-weight: bold;
+            color: #5c4362;
+            transition: color 0.5s ease;
+        }
+
+        .qty-select {
+            width: auto !important;
+            padding: 4px 10px !important;
+            font-size: 0.88rem !important;
+            border-radius: 8px !important;
+            cursor: pointer;
+        }
+
+        .qty-select:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background-color: #eee !important;
+        }
+
+        /* ジャンル別タイトル・ブロック */
+        .order-genre-block {
+            margin-bottom: 25px;
+        }
+
+        .order-genre-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .order-genre-label {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #4a3b52;
+            margin-bottom: 12px;
+            padding-left: 10px;
+            border-left: 4px solid #ff4d94;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.5s ease;
+        }
+
+        /* 9/12専用注意事項エリア */
+        .special-order-notes {
+            background-color: #fff0f5;
+            border: 1.5px dashed #ff8da1;
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-size: 0.88rem;
+            color: #d81b60;
+            font-weight: bold;
+            line-height: 1.7;
+            margin-bottom: 22px;
+            transition: all 0.5s ease;
+        }
+
+        /* キャスト選択 */
+        .cast-select-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .cast-option input[type="radio"] {
+            display: none;
+        }
+
+        .cast-option label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 6px;
+            border: 2px solid #e2d5ed;
+            border-radius: 12px;
+            background: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s ease;
             text-align: center;
-            color: #888;
+        }
+
+        .cast-option label img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffd0e0;
+            margin-bottom: 6px;
+            transition: border-color 0.5s ease;
+        }
+
+        .cast-option label span {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #4a3b52;
+            transition: color 0.5s ease;
+        }
+
+        .cast-option input[type="radio"]:checked + label {
+            border-color: #ff8da1;
+            background: #fff0f5;
+            box-shadow: 0 4px 10px rgba(255, 141, 161, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .cast-option input[type="radio"]:checked + label img {
+            border-color: #ff4d94;
+        }
+
+        /* 注意事項 */
+        .notes-box {
+            background-color: #fff9fa;
+            border: 1px dashed #ffaec9;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            color: #664f59;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            transition: all 0.5s ease;
+        }
+
+        .notes-box ul {
+            padding-left: 20px;
+            margin-top: 8px;
+        }
+
+        .agree-check {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .agree-check label {
+            font-weight: bold;
+            color: #4a3b52;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: color 0.5s ease;
+        }
+
+        /* 送信ボタン */
+        .submit-btn-wrapper {
+            text-align: center;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #ff8da1 0%, #c084fc 100%);
+            color: #ffffff;
+            border: none;
+            padding: 16px 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 18px rgba(192, 132, 252, 0.4);
+            letter-spacing: 0.05em;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(255, 141, 161, 0.5);
+            opacity: 0.95;
+        }
+
+        /* 完了モーダル */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            padding: 35px 25px;
+            border-radius: 24px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 3px solid #ff9ebb;
+            animation: popIn 0.3s ease;
+            transition: all 0.5s ease;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-content h3 {
+            color: #ff4d94;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            transition: color 0.5s ease;
+        }
+
+        .modal-content p {
+            color: #5c4362;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            transition: color 0.5s ease;
+        }
+
+        .modal-close-btn {
+            background: #5c4362;
+            color: #fff;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.5s ease;
+        }
+
+        /* =========================================================
+           ★ 9月12日専用：モノトーン（薄めグレー）テーマ拡張スタイル
+           ========================================================= */
+        .reservation-container.theme-black-gray {
+            background-color: rgba(52, 55, 60, 0.92);
+            color: #f0f0f0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .theme-black-gray .form-header-desc {
+            color: #d1d5db;
+        }
+
+        .theme-black-gray .form-section {
+            background: #282b30;
+            border-color: #40444c;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+        }
+
+        .theme-black-gray .form-section-title {
+            color: #ffffff;
+            border-bottom-color: #585c66;
+        }
+
+        .theme-black-gray .order-genre-label {
+            color: #ffffff;
+            border-left-color: #888888;
+        }
+
+        .theme-black-gray .special-order-notes {
+            background-color: #22252a;
+            border-color: #666666;
+            color: #ff8da1;
+        }
+
+        .theme-black-gray .form-label {
+            color: #f0f0f0;
+        }
+
+        /* 9月12日テーマ時の「必須」バッジ色を統合 */
+        .theme-black-gray .required {
+            background-color: #585c66;
+            color: #ffffff;
+        }
+
+        .theme-black-gray .form-control {
+            background-color: #1a1c20;
+            border-color: #4a4e58;
+            color: #ffffff;
+        }
+
+        .theme-black-gray .form-control:focus {
+            border-color: #888888;
+            background-color: #22252a;
+            box-shadow: 0 0 8px rgba(200, 200, 200, 0.3);
+        }
+
+        .theme-black-gray .event-note {
+            color: #e2e8f0;
+        }
+
+        .theme-black-gray .plan-card {
+            background: #1f2125;
+            border-color: #383c44;
+        }
+
+        .theme-black-gray .plan-card.is-checked,
+        .theme-black-gray .plan-card:has(input[type="radio"]:checked) {
+            border-color: #888888;
+            background: linear-gradient(135deg, #3a3a3a 0%, #222222 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .theme-black-gray .qty-container {
+            border-top-color: #383c44;
+        }
+
+        .theme-black-gray .qty-label {
+            color: #d1d5db;
+        }
+
+        .theme-black-gray .qty-select:disabled {
+            background-color: #111215 !important;
+            border-color: #333 !important;
+            color: #555 !important;
+        }
+
+        .theme-black-gray .plan-title {
+            color: #ffffff;
+        }
+
+        .theme-black-gray .plan-price {
+            color: #cccccc;
+        }
+
+        .theme-black-gray .plan-desc {
+            color: #aaaaaa;
+        }
+
+        .theme-black-gray .cast-option label {
+            background: #1f2125;
+            border-color: #383c44;
+        }
+
+        .theme-black-gray .cast-option label span {
+            color: #e0e0e0;
+        }
+
+        .theme-black-gray .cast-option label img {
+            border-color: #555555;
+        }
+
+        .theme-black-gray .cast-option input[type="radio"]:checked + label {
+            border-color: #888888;
+            background: #333333;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .theme-black-gray .cast-option input[type="radio"]:checked + label img {
+            border-color: #ffffff;
+        }
+
+        /* ★ 修正ポイント：ご予約時の注意事項枠の文字色を注文メニューの注意事項と同色(#ff8da1)に変更 */
+        .theme-black-gray .notes-box {
+            background-color: #202226;
+            border-color: #4a4e58;
+            color: #ff8da1;
+        }
+
+        .theme-black-gray .agree-check label {
+            color: #f0f0f0;
+        }
+
+        .theme-black-gray .submit-btn {
+            background: linear-gradient(135deg, #555555 0%, #111111 100%);
+            border: 1px solid #666666;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+        }
+
+        .theme-black-gray .submit-btn:hover {
+            background: linear-gradient(135deg, #666666 0%, #222222 100%);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+        }
+
+        .theme-black-gray .modal-content {
+            background: #282b30;
+            border-color: #585c66;
+        }
+
+        .theme-black-gray .modal-content h3 {
+            color: #ffffff;
+        }
+
+        .theme-black-gray .modal-content p {
+            color: #cccccc;
+        }
+
+        .theme-black-gray .modal-close-btn {
+            background: #444444;
+        }
+
+        @media (max-width: 768px) {
+            .reservation-container {
+                width: 92%;
+                padding: 30px 15px;
+                margin: 30px auto;
+            }
+            .form-section {
+                padding: 20px 15px;
+            }
+            .plan-options {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="fixed-background"></div>
 
-    <h1>ご来店予約</h1>
+    <header class="header">
+        <div class="logo">
+            <img src="logo.jpeg" alt="しゅしゅどーる 公式ロゴ">
+        </div>
 
-    <div class="form-group">
-        <label for="reservation-date">ご来店日を選択してください</label>
-        <input type="date" id="reservation-date">
-    </div>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
 
-    <div class="form-group">
-        <label>本日の出勤キャスト</label>
-        <div id="cast-list" class="cast-container">
-            <p class="no-data">日付を選択してください。</p>
+        <nav class="nav" id="nav-menu">
+            <ul>
+                <li><a href="index.html#home">HOME</a></li>
+                <li><a href="index.html#news">NEWS</a></li>
+                <li><a href="index.html#schedule">SCHEDULE</a></li>
+                <li><a href="index.html#system">SYSTEM</a></li>
+                <li><a href="profile.html">PROFILE</a></li>
+                <li><a href="index.html#access">ACCESS</a></li>
+                <li><a href="#reservation">RESERVATION</a></li>
+                <li><a href="index.html#shop">SHOP</a></li> 
+            </ul>
+        </nav>
+    </header>
+
+    <main class="reservation-container" id="reservation">
+        <h2 class="section-title">RESERVATION</h2>
+        <p class="form-header-desc">
+            ご来店のご予約はこちらのフォームより承っております。<br>
+            必要事項をご入力の上、「予約を送信する」ボタンを押してください。
+        </p>
+
+        <form id="reservationForm">
+            <!-- 1. ご来店日時・人数・滞在時間 -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <span>📅</span> ご来店日時・人数・滞在時間
+                </div>
+
+                <div class="form-row">
+                    <!-- ご来店日 -->
+                    <div class="form-col form-group">
+                        <label class="form-label" for="res-date">ご来店日 <span class="required">必須</span></label>
+                        <input type="date" id="res-date" name="date" class="form-control" required>
+                    </div>
+
+                    <!-- ご来店時間 / 部選択（JavaScriptで動的変更） -->
+                    <div class="form-col form-group">
+                        <label class="form-label" for="res-time" id="res-time-label">
+                            <span id="label-text">ご来店時間</span> <span class="required">必須</span>
+                        </label>
+                        <select id="res-time" name="time" class="form-control" required>
+                            <option value="">時間を選択してください</option>
+                            <option value="18:00">18:00</option>
+                            <option value="18:30">18:30</option>
+                            <option value="19:00">19:00</option>
+                            <option value="19:30">19:30</option>
+                            <option value="20:00">20:00</option>
+                            <option value="20:30">20:30</option>
+                            <option value="21:00">21:00</option>
+                            <option value="21:30">21:30</option>
+                            <option value="22:00">22:00</option>
+                        </select>
+                        <div id="event-note" class="event-note">※9/12はイベント日につき部制となります</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <!-- 人数 -->
+                    <div class="form-col form-group">
+                        <label class="form-label" for="res-guests">ご来店人数 <span class="required">必須</span></label>
+                        <select id="res-guests" name="guests" class="form-control" required>
+                            <option value="1名">1名様</option>
+                            <option value="2名">2名様</option>
+                            <option value="3名">3名様</option>
+                            <option value="4名">4名様</option>
+                            <option value="5名以上">5名様以上（備考欄にご記入ください）</option>
+                        </select>
+                    </div>
+
+                    <!-- 予定滞在時間（※9/12は非表示＆非必須） -->
+                    <div class="form-col form-group" id="duration-group">
+                        <label class="form-label" for="res-duration">予定滞在時間 <span class="required">必須</span></label>
+                        <select id="res-duration" name="duration" class="form-control" required>
+                            <option value="">滞在時間を選択してください</option>
+                            <option value="1時間（60分）">1時間（60分）</option>
+                            <option value="2時間（120分）">2時間（120分）</option>
+                            <option value="3時間（180分）">3時間（180分）</option>
+                            <option value="4時間以上">4時間以上</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. ご利用プラン / 注文メニュー -->
+            <div class="form-section">
+                <div class="form-section-title" id="plan-section-title">
+                    <span>🍹</span> ご利用予定のプラン(店舗で変更が可能です)
+                </div>
+
+                <!-- 通常日のご利用プラン（ラジオボタン） -->
+                <div class="plan-options" id="normal-plan-options">
+                    <div class="plan-card">
+                        <input type="radio" id="plan-charge" name="plan" value="通常チャージ（60分 ¥1,100 + 1d）" checked>
+                        <label for="plan-charge">
+                            <div class="plan-title">
+                                <span>通常チャージ (60min)</span>
+                                <span class="plan-price">¥1,100</span>
+                            </div>
+                            <div class="plan-desc">+ 1ドリンク制</div>
+                        </label>
+                    </div>
+
+                    <div class="plan-card">
+                        <input type="radio" id="plan-soft" name="plan" value="ソフトドリンク飲み放題（60分 ¥3,000）">
+                        <label for="plan-soft">
+                            <div class="plan-title">
+                                <span>ソフトドリンク飲み放題</span>
+                                <span class="plan-price">¥3,000</span>
+                            </div>
+                            <div class="plan-desc">60min 飲み放題</div>
+                        </label>
+                    </div>
+
+                    <div class="plan-card">
+                        <input type="radio" id="plan-alcohol" name="plan" value="アルコール飲み放題（60分 ¥3,300）">
+                        <label for="plan-alcohol">
+                            <div class="plan-title">
+                                <span>アルコール飲み放題</span>
+                                <span class="plan-price">¥3,300</span>
+                            </div>
+                            <div class="plan-desc">60min 飲み放題</div>
+                        </label>
+                    </div>
+
+                    <div class="plan-card">
+                        <input type="radio" id="plan-can" name="plan" value="缶込飲み放題（60分 ¥3,800）">
+                        <label for="plan-can">
+                            <div class="plan-title">
+                                <span>缶込飲み放題</span>
+                                <span class="plan-price">¥3,800</span>
+                            </div>
+                            <div class="plan-desc">60min 缶類含む飲み放題</div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 9月12日専用の注文メニュー（複数選択＆個数指定可能） -->
+                <div id="special-order-options" style="display: none;">
+
+                    <!-- 9月12日専用の注意事項（メニューの一番始めに配置） -->
+                    <div class="special-order-notes">
+                        ※グッズの内容/金額は予約数を確認してからの作成になるため、販売時に変更する場合がございます<br>
+                        ※当日受け取り希望の方は予約時に必ず選択してください
+                    </div>
+
+                    <!-- ジャンル：フィリコ -->
+                    <div class="order-genre-block">
+                        <div class="order-genre-label">🍾 フィリコ <span class="required">必須</span></div>
+                        <div class="plan-options">
+                            <!-- 注文予定なし -->
+                            <div class="plan-card">
+                                <input type="checkbox" id="order-fillico-none" class="none-checkbox" data-genre="champagne" value="注文予定なし">
+                                <label for="order-fillico-none">
+                                    <div class="plan-title"><span>注文予定なし</span></div>
+                                    <div class="plan-desc">フィリコのご注文はありません</div>
+                                </label>
+                            </div>
+
+                            <!-- ノンアルコール -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-fillico-item" class="item-checkbox" data-genre="champagne" value="フィリコ（¥110,000）">
+                                <label for="order-fillico-item">
+                                    <div class="plan-title">
+                                        <span>フィリコ</span>
+                                        <span class="plan-price">¥110,000</span>
+                                    </div>
+                                    <div class="plan-desc">フィリコ</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ジャンル1：オリシャン -->
+                    <div class="order-genre-block">
+                        <div class="order-genre-label">🍾 オリシャン <span class="required">必須</span></div>
+                        <div class="plan-options">
+                            <!-- 注文予定なし -->
+                            <div class="plan-card">
+                                <input type="checkbox" id="order-champagne-none" class="none-checkbox" data-genre="champagne" value="注文予定なし">
+                                <label for="order-champagne-none">
+                                    <div class="plan-title"><span>注文予定なし</span></div>
+                                    <div class="plan-desc">オリシャンのご注文はありません</div>
+                                </label>
+                            </div>
+
+                            <!-- ノンアルコール -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-champagne-nonalc" class="item-checkbox" data-genre="champagne" value="ノンアルコール（¥28,000）">
+                                <label for="order-champagne-nonalc">
+                                    <div class="plan-title">
+                                        <span>ノンアルコール</span>
+                                        <span class="plan-price">¥28,000</span>
+                                    </div>
+                                    <div class="plan-desc">ノンアルコールオリシャン</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- アルコール -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-champagne-alc" class="item-checkbox" data-genre="champagne" value="アルコール（¥30,000）">
+                                <label for="order-champagne-alc">
+                                    <div class="plan-title">
+                                        <span>アルコール</span>
+                                        <span class="plan-price">¥30,000</span>
+                                    </div>
+                                    <div class="plan-desc">アルコールオリシャン</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- キラオリシャン -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-champagne-kira" class="item-checkbox" data-genre="champagne" value="キラオリシャン（¥35,000）">
+                                <label for="order-champagne-kira">
+                                    <div class="plan-title">
+                                        <span>キラオリシャン</span>
+                                        <span class="plan-price">¥35,000</span>
+                                    </div>
+                                    <div class="plan-desc">キラキラオリシャン</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- 周年オリシャン -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-champagne-anniv" class="item-checkbox" data-genre="champagne" value="周年オリシャン（¥22,000）">
+                                <label for="order-champagne-anniv">
+                                    <div class="plan-title">
+                                        <span>周年オリシャン</span>
+                                        <span class="plan-price">¥22,000</span>
+                                    </div>
+                                    <div class="plan-desc">周年オリシャン</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ジャンル2：グッズ -->
+                    <div class="order-genre-block">
+                        <div class="order-genre-label">🎁 グッズ <span class="required">必須</span></div>
+                        <div class="plan-options">
+                            <!-- 注文予定なし -->
+                            <div class="plan-card">
+                                <input type="checkbox" id="order-goods-none" class="none-checkbox" data-genre="goods" value="注文予定なし">
+                                <label for="order-goods-none">
+                                    <div class="plan-title"><span>注文予定なし</span></div>
+                                    <div class="plan-desc">グッズのご注文はありません</div>
+                                </label>
+                            </div>
+
+                            <!-- ステッカー 2種セット -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-goods-sticker" class="item-checkbox" data-genre="goods" value="ステッカー 2種セット（¥1,000）">
+                                <label for="order-goods-sticker">
+                                    <div class="plan-title">
+                                        <span>ステッカー 2種セット</span>
+                                        <span class="plan-price">¥1,000</span>
+                                    </div>
+                                    <div class="plan-desc">2種セット</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- イラスト目印チャーム（周年衣装） -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-goods-charm-anniv" class="item-checkbox" data-genre="goods" value="イラスト目印チャーム 周年衣装（¥1,500）">
+                                <label for="order-goods-charm-anniv">
+                                    <div class="plan-title">
+                                        <span>イラストめじるしチャーム</span>
+                                        <span class="plan-price">¥1,500</span>
+                                    </div>
+                                    <div class="plan-desc">周年衣装モデル</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- イラスト目印チャーム（2026生誕衣装） -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-goods-charm-seitan" class="item-checkbox" data-genre="goods" value="イラスト目印チャーム 2026生誕衣装（¥1,500）">
+                                <label for="order-goods-charm-seitan">
+                                    <div class="plan-title">
+                                        <span>イラストめじるしチャーム</span>
+                                        <span class="plan-price">¥1,500</span>
+                                    </div>
+                                    <div class="plan-desc">2026生誕衣装モデル</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- 実写アクスタ（周年衣装） -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-goods-acsta-anniv" class="item-checkbox" data-genre="goods" value="実写アクスタ 周年衣装（¥3,000）">
+                                <label for="order-goods-acsta-anniv">
+                                    <div class="plan-title">
+                                        <span>実写アクスタ</span>
+                                        <span class="plan-price">¥3,000</span>
+                                    </div>
+                                    <div class="plan-desc">周年衣装モデル</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- 実写アクスタ（2026生誕衣装） -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-goods-acsta-seitan" class="item-checkbox" data-genre="goods" value="実写アクスタ 2026生誕衣装（¥3,000）">
+                                <label for="order-goods-acsta-seitan">
+                                    <div class="plan-title">
+                                        <span>実写アクスタ</span>
+                                        <span class="plan-price">¥3,000</span>
+                                    </div>
+                                    <div class="plan-desc">2026生誕衣装モデル</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- イラストアクキー（周年衣装） -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-goods-key-anniv" class="item-checkbox" data-genre="goods" value="イラストアクキー 周年衣装（¥2,000）">
+                                <label for="order-goods-key-anniv">
+                                    <div class="plan-title">
+                                        <span>イラストアクキー</span>
+                                        <span class="plan-price">¥2,000</span>
+                                    </div>
+                                    <div class="plan-desc">周年衣装モデル</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- イラストアクキー（2026生誕衣装） -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-goods-key-seitan" class="item-checkbox" data-genre="goods" value="イラストアクキー 2026生誕衣装（¥2,000）">
+                                <label for="order-goods-key-seitan">
+                                    <div class="plan-title">
+                                        <span>イラストアクキー</span>
+                                        <span class="plan-price">¥2,000</span>
+                                    </div>
+                                    <div class="plan-desc">2026生誕衣装モデル</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- イラストTシャツ（周年衣装） -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-goods-tshirt-anniv" class="item-checkbox" data-genre="goods" value="イラストTシャツ 周年衣装（¥6,600）">
+                                <label for="order-goods-tshirt-anniv">
+                                    <div class="plan-title">
+                                        <span>イラストTシャツ</span>
+                                        <span class="plan-price">¥6,600</span>
+                                    </div>
+                                    <div class="plan-desc">周年衣装モデル</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- イラストTシャツ（2026生誕衣装） -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-goods-tshirt-seitan" class="item-checkbox" data-genre="goods" value="イラストTシャツ 2026生誕衣装（¥6,600）">
+                                <label for="order-goods-tshirt-seitan">
+                                    <div class="plan-title">
+                                        <span>イラストTシャツ</span>
+                                        <span class="plan-price">¥6,600</span>
+                                    </div>
+                                    <div class="plan-desc">2026生誕衣装モデル</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- 周年衣装ブロマイドファイル -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-goods-promide" class="item-checkbox" data-genre="goods" value="周年衣装ブロマイドファイル 1種（¥4,400）">
+                                <label for="order-goods-promide">
+                                    <div class="plan-title">
+                                        <span>周年衣装ブロマイドファイル 1種</span>
+                                        <span class="plan-price">¥4,400</span>
+                                    </div>
+                                    <div class="plan-desc">周年衣装モデル</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- 生誕衣装チェキファイル -->
+                            <div class="plan-card item-card">
+                                <input type="checkbox" id="order-goods-cheki" class="item-checkbox" data-genre="goods" value="生誕衣装チェキファイル 1種（¥4,400）">
+                                <label for="order-goods-cheki">
+                                    <div class="plan-title">
+                                        <span>生誕衣装チェキファイル 1種</span>
+                                        <span class="plan-price">¥4,400</span>
+                                    </div>
+                                    <div class="plan-desc">生誕衣装モデル</div>
+                                </label>
+                                <div class="qty-container">
+                                    <span class="qty-label">数量</span>
+                                    <select class="qty-select form-control" disabled>
+                                        <option value="1">1個</option><option value="2">2個</option><option value="3">3個</option><option value="4">4個</option><option value="5">5個</option><option value="6">6個</option><option value="7">7個</option><option value="8">8個</option><option value="9">9個</option><option value="10">10個</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 9月12日専用：当日受け取り希望の選択項目 -->
+                    <div class="order-genre-block" style="margin-top: 25px;">
+                        <div class="order-genre-label">📦 当日受け取り希望 <span class="required">必須</span></div>
+                        <div class="plan-options">
+                            <div class="plan-card">
+                                <input type="radio" id="pickup-yes" name="same_day_pickup" value="当日受け取りを希望する">
+                                <label for="pickup-yes">
+                                    <div class="plan-title">
+                                        <span>当日受け取りを希望する</span>
+                                    </div>
+                                    <div class="plan-desc">イベント当日に店舗にて受け取ります</div>
+                                </label>
+                            </div>
+                            <div class="plan-card">
+                                <input type="radio" id="pickup-no" name="same_day_pickup" value="当日受け取りを希望しない">
+                                <label for="pickup-no">
+                                    <div class="plan-title">
+                                        <span>当日受け取りを希望しない</span>
+                                    </div>
+                                    <div class="plan-desc">後日受け取り・配送など</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 3. 指名・お目当てのキャスト（※JavaScriptで動的生成 / 9月12日は非表示） -->
+            <div class="form-section" id="cast-section">
+                <div class="form-section-title">
+                    <span>✨</span> お目当てのキャスト
+                </div>
+
+                <div class="cast-select-grid" id="cast-select-grid">
+                    <div class="cast-option">
+                        <input type="radio" id="cast-none" name="cast" value="指定なし" checked>
+                        <label for="cast-none">
+                            <div style="width:60px; height:60px; border-radius:50%; background:#f0e6f5; display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#8b5cf6; margin-bottom:6px;">🐾</div>
+                            <span>指定なし</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. お客様情報 -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <span>👤</span> お客様情報
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col form-group">
+                        <label class="form-label" for="user-name">ニックネーム <span class="required">必須</span></label>
+                        <input type="text" id="user-name" name="name" class="form-control" placeholder="例：ニックネーム" required>
+                    </div>
+                </div>
+
+                <!-- 電話番号・確認用電話番号 -->
+                <div class="form-row">
+                    <div class="form-col form-group">
+                        <label class="form-label" for="user-phone">電話番号 <span class="required">必須</span></label>
+                        <input type="tel" id="user-phone" name="phone" class="form-control" placeholder="例：09012345678" maxlength="11" required>
+                    </div>
+                    <div class="form-col form-group">
+                        <label class="form-label" for="user-phone-confirm">電話番号（確認用） <span class="required">必須</span></label>
+                        <input type="tel" id="user-phone-confirm" class="form-control" placeholder="例：09012345678" maxlength="11" required>
+                    </div>
+                </div>
+
+                <!-- メールアドレス・確認用メールアドレス -->
+                <div class="form-row">
+                    <div class="form-col form-group">
+                        <label class="form-label" for="user-email">メールアドレス <span class="required">必須</span></label>
+                        <input type="email" id="user-email" name="email" class="form-control" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-col form-group">
+                        <label class="form-label" for="user-email-confirm">メールアドレス（確認用） <span class="required">必須</span></label>
+                        <input type="email" id="user-email-confirm" class="form-control" placeholder="example@email.com" required>
+                    </div>
+                </div>
+
+                <!-- ★ SNS ID（9月12日のみ必須に動的変更） -->
+                <div class="form-group">
+                    <label class="form-label" for="user-sns">X (Twitter) / Instagram ID <span class="optional" id="sns-badge">任意</span></label>
+                    <input type="text" id="user-sns" name="sns" class="form-control" placeholder="例：@ChouchouDoll_oO">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="user-notes">ご要望・備考 <span class="optional">任意</span></label>
+                    <textarea id="user-notes" name="notes" class="form-control" rows="3" placeholder="ご質問・ご要望などございましたらご記入ください。"></textarea>
+                </div>
+            </div>
+
+            <!-- 注意事項（JavaScriptで日付によりリスト内容を動的変更） -->
+            <div class="notes-box">
+                <strong>【ご予約時の注意事項】</strong>
+                <ul id="notes-list">
+                    <li>営業時間：18:00〜23:00</li>
+                    <li>お会計時にサービス料金10%を頂戴いたします。</li>
+                    <li>キャンセルの場合は、前日までに店舗SNSダイレクトメッセージまでご連絡ください。</li>
+                    <li>混雑状況により希望に添えない場合がございます。</li>
+                </ul>
+            </div>
+
+            <div class="agree-check">
+                <label>
+                    <input type="checkbox" id="agree-check" required> 注意事項を確認し、同意しました
+                </label>
+            </div>
+
+            <div class="submit-btn-wrapper">
+                <button type="submit" class="submit-btn">予約を送信する</button>
+            </div>
+        </form>
+    </main>
+
+    <!-- 送信完了モーダル -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <h3>ご予約を受け付けました</h3>
+            <p id="modalMsg">ご予約ありがとうございます！<br>ご入力いただいたメールアドレス宛に、確認のご連絡を差し上げます。</p>
+            <button class="modal-close-btn" id="modalCloseBtn">閉じる</button>
         </div>
     </div>
 
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="group-name">
+                しゅしゅど～る<br>
+                SNS各種アカウント<br>
+            </p>
+
+            <div class="sns-links">
+                <a href="https://x.com/ChouchouDoll_oO?s=20" class="sns-btn x-link" target="_blank">X (Twitter)</a>
+                <a href="https://instagram.com/chouchoudoll_o0?igsh=emo3YWc3NzVlOWl1" class="sns-btn insta-link" target="_blank">Instagram</a>
+                <a href="https://tiktok.com/@Chouchoudoll_o0" class="sns-btn tiktok-link" target="_blank">TikTok</a>
+            </div>
+
+            <p class="address">
+                〒160-0021<br>
+                東京都新宿区歌舞伎町2丁目14-12<br>
+                光凛ビル B1F<br>
+            </p>
+            <p class="copyright">&copy; しゅしゅど～る</p>
+        </div>
+    </footer>
+
+    <script src="casts.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const dateInput = document.getElementById('reservation-date');
-            const castListContainer = document.getElementById('cast-list');
+    // ★ 電話番号入力欄：数字のみ＆最大11桁制限
+    ['user-phone', 'user-phone-confirm'].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 11);
+            });
+        }
+    });
 
-            // --- 1. 本日の日付を設定 (YYYY-MM-DD) ---
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            const todayStr = `${year}-${month}-${day}`;
+    // ★ 入力不一致の特定関数
+    function getMismatchInfo(original, confirm) {
+        if (original === confirm) return null;
+        const minLen = Math.min(original.length, confirm.length);
+        for (let i = 0; i < minLen; i++) {
+            if (original[i] !== confirm[i]) {
+                return `${i + 1}文字目（もと：'${original[i]}' / 確認用：'${confirm[i]}'）`;
+            }
+        }
+        if (original.length !== confirm.length) {
+            return `文字数（もと：${original.length}文字 / 確認用：${confirm.length}文字）`;
+        }
+        return "不一致箇所あり";
+    }
 
-            // カレンダーで過去の日付を選択不可にする（スマホの操作性向上）
-            dateInput.setAttribute('min', todayStr);
+    // ★ 9月12日専用：商品の複数選択・個数連動 ＆ 「注文予定なし」との排他制御
+    document.querySelectorAll('.item-card').forEach(card => {
+        const checkbox = card.querySelector('.item-checkbox');
+        const qtySelect = card.querySelector('.qty-select');
+        const genre = checkbox.dataset.genre;
 
-            // --- 2. キャスト・出勤スケジュールデータ ---
-            const castMembers = [
-                {
-                    id: "cast-yuinya",
-                    name: "ゆいにゃ",
-                    image: "ゆいにゃさん.jpg",
-                    workDays: [
-                        "2026-08-01", "2026-08-02", "2026-08-03", "2026-08-05", 
-                        "2026-08-07", "2026-08-08", "2026-08-09", "2026-08-10", 
-                        "2026-08-11", "2026-08-12", "2026-08-13", "2026-08-14", "2026-08-15"
-                    ]
-                },
-                {
-                    id: "cast-fuchan",
-                    name: "ふちゃん",
-                    image: "ふちゃん.jpg",
-                    workDays: ["2026-08-12", "2026-08-13", "2026-08-14", "2026-08-15"]
-                },
-                {
-                    id: "cast-hime",
-                    name: "ひめ",
-                    image: "ひめさん.jpg",
-                    workDays: ["2026-08-12"]
-                },
-                {
-                    id: "cast-kaede",
-                    name: "楓",
-                    image: "楓さん.jpg",
-                    workDays: ["2026-08-12", "2026-08-14", "2026-08-15"]
+        // チェックボックス切り替え時
+        checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+                card.classList.add('is-checked');
+                qtySelect.disabled = false;
+                // 「注文予定なし」のチェックを解除
+                const noneCb = document.querySelector(`.none-checkbox[data-genre="${genre}"]`);
+                if (noneCb) {
+                    noneCb.checked = false;
+                    noneCb.closest('.plan-card').classList.remove('is-checked');
                 }
-            ];
+            } else {
+                card.classList.remove('is-checked');
+                qtySelect.disabled = true;
+                qtySelect.value = "1"; // 初期値に戻す
+            }
+        });
 
-            // --- 3. 出勤可能日の集計・判定用の変数準備 ---
-            const availableDates = [...new Set(castMembers.flatMap(c => c.workDays))];
-
-            const latestWorkDate = availableDates.length > 0
-                ? availableDates.reduce((max, d) => d > max ? d : max, availableDates[0])
-                : "";
-
-            // --- 4. 表示更新用関数 ---
-            function updateCastList(selectedDate) {
-                if (!selectedDate) {
-                    castListContainer.innerHTML = '<p class="no-data">日付を選択してください。</p>';
-                    return;
+        // 数量変更時にも自動でチェックを入れる
+        qtySelect.addEventListener('change', () => {
+            if (!checkbox.checked) {
+                checkbox.checked = true;
+                card.classList.add('is-checked');
+                qtySelect.disabled = false;
+                const noneCb = document.querySelector(`.none-checkbox[data-genre="${genre}"]`);
+                if (noneCb) {
+                    noneCb.checked = false;
+                    noneCb.closest('.plan-card').classList.remove('is-checked');
                 }
+            }
+        });
+    });
 
-                const workingCasts = castMembers.filter(cast => cast.workDays.includes(selectedDate));
+    // 「注文予定なし」のコントロール
+    document.querySelectorAll('.none-checkbox').forEach(noneCb => {
+        const genre = noneCb.dataset.genre;
+        noneCb.addEventListener('change', () => {
+            if (noneCb.checked) {
+                noneCb.closest('.plan-card').classList.add('is-checked');
+                // 同ジャンルの全商品を解除
+                document.querySelectorAll(`.item-checkbox[data-genre="${genre}"]`).forEach(cb => {
+                    cb.checked = false;
+                    const card = cb.closest('.item-card');
+                    card.classList.remove('is-checked');
+                    const qtySelect = card.querySelector('.qty-select');
+                    qtySelect.disabled = true;
+                    qtySelect.value = "1";
+                });
+            } else {
+                noneCb.closest('.plan-card').classList.remove('is-checked');
+            }
+        });
+    });
 
-                if (workingCasts.length === 0) {
-                    castListContainer.innerHTML = '<p class="no-data">出勤キャストのデータがありません。</p>';
-                    return;
+    // ハンバーガーメニュー制御
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+    }
+
+    // 日付処理
+    function getFormattedDate(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    const availableDates = Array.from(
+        new Set(castMembers.flatMap(cast => cast.workDays || []))
+    ).sort();
+
+    const latestWorkDate = availableDates.length > 0 ? availableDates[availableDates.length - 1] : "";
+
+    const dateInput = document.getElementById('res-date');
+    if (dateInput) {
+        const todayStr = getFormattedDate(new Date());
+        dateInput.setAttribute('min', todayStr);
+
+        const maxDateObj = new Date();
+        maxDateObj.setMonth(maxDateObj.getMonth() + 2);
+        dateInput.setAttribute('max', getFormattedDate(maxDateObj));
+
+        dateInput.addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (!val) return;
+
+            if (val < todayStr) {
+                alert('過去の日付はご予約いただけません。');
+                e.target.value = '';
+                updateCastList("");
+                handleDateChange("");
+                return;
+            }
+
+            const isSpecialDate = val.endsWith('-09-12');
+            const hasCastWorking = availableDates.includes(val);
+
+            if (!hasCastWorking && !isSpecialDate) {
+                if (latestWorkDate && val <= latestWorkDate) {
+                    alert('選択された日付は【店休日】のため、ご予約いただけません。');
+                } else {
+                    alert('選択された日付の出勤スケジュールは【未定】のため、まだご予約いただけません。\nスケジュール公開まで今しばらくお待ちください。');
                 }
+                
+                e.target.value = '';
+                updateCastList("");
+                handleDateChange("");
+                return;
+            }
 
-                castListContainer.innerHTML = workingCasts.map(cast => `
-                    <div class="cast-card">
-                        <img src="${cast.image}" alt="${cast.name}" onerror="this.src='https://via.placeholder.com/150?text=No+Image';">
-                        <div class="cast-name">${cast.name}</div>
+            handleDateChange(val);
+        });
+    }
+
+    function updateCastList(selectedDateStr) {
+        const container = document.getElementById('cast-select-grid');
+        if (!container) return;
+
+        let html = `
+            <div class="cast-option">
+                <input type="radio" id="cast-none" name="cast" value="指定なし" checked>
+                <label for="cast-none">
+                    <div style="width:60px; height:60px; border-radius:50%; background:#f0e6f5; display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#8b5cf6; margin-bottom:6px;">🐾</div>
+                    <span>指定なし</span>
+                </label>
+            </div>
+        `;
+
+        if (selectedDateStr) {
+            const workingCasts = castMembers.filter(cast => cast.workDays.includes(selectedDateStr));
+            workingCasts.forEach(cast => {
+                html += `
+                    <div class="cast-option">
+                        <input type="radio" id="${cast.id}" name="cast" value="${cast.name}">
+                        <label for="${cast.id}">
+                            <img src="${cast.image}" alt="${cast.name}">
+                            <span>${cast.name}</span>
+                        </label>
                     </div>
-                `).join('');
+                `;
+            });
+        }
+
+        container.innerHTML = html;
+    }
+
+    // --- 9月12日イベント＆切り替え処理 ---
+    const resContainer = document.querySelector('.reservation-container');
+    const fixedBg = document.querySelector('.fixed-background');
+    const timeSelect = document.getElementById('res-time');
+    const labelText = document.getElementById('label-text');
+    const eventNote = document.getElementById('event-note');
+
+    const planSectionTitle = document.getElementById('plan-section-title');
+    const normalPlanOptions = document.getElementById('normal-plan-options');
+    const specialOrderOptions = document.getElementById('special-order-options');
+
+    const durationGroup = document.getElementById('duration-group');
+    const resDuration = document.getElementById('res-duration');
+    const castSection = document.getElementById('cast-section');
+
+    const snsInput = document.getElementById('user-sns');
+    const snsBadge = document.getElementById('sns-badge');
+    const notesList = document.getElementById('notes-list');
+
+    const normalOptionsHTML = `
+        <option value="">時間を選択してください</option>
+        <option value="18:00">18:00</option>
+        <option value="18:30">18:30</option>
+        <option value="19:00">19:00</option>
+        <option value="19:30">19:30</option>
+        <option value="20:00">20:00</option>
+        <option value="20:30">20:30</option>
+        <option value="21:00">21:00</option>
+        <option value="21:30">21:30</option>
+        <option value="22:00">22:00</option>
+    `;
+
+    const specialPartOptionsHTML = `
+        <option value="">部を選択してください</option>
+        <option value="1部（15:30〜17:30）">1部（15:30〜17:30）</option>
+        <option value="2部（18:00〜20:30）">2部（18:00〜20:30）</option>
+        <option value="3部（21:00〜23:30）">3部（21:00〜23:30）</option>
+    `;
+
+    // 通常時の注意事項HTML
+    const defaultNotesHTML = `
+        <li>営業時間：18:00〜23:00</li>
+        <li>お会計時にサービス料金10%を頂戴いたします。</li>
+        <li>キャンセルの場合は、前日までに店舗SNSダイレクトメッセージまでご連絡ください。</li>
+        <li>混雑状況により希望に添えない場合がございます。</li>
+    `;
+
+    // 9月12日専用の注意事項HTML
+    const specialNotesHTML = `
+        <li>お会計時にサービス料金10%を頂戴いたします。</li>
+        <li>キャンセルの場合は、前日までに店舗SNSダイレクトメッセージまでご連絡ください。</li>
+        <li>混雑状況により希望に添えない場合がございます。</li>
+        <li>注文内容は来店時に変更可能です</li>
+        <li>予約送信後予約が確定致します</li>
+        <li>予約確定後のキャンセルはキャンセル代を頂戴致しますので予めご了承ください</li>
+    `;
+
+    function handleDateChange(val) {
+        updateCastList(val);
+
+        if (!val) {
+            if (fixedBg) fixedBg.classList.remove('event-date-0912');
+            if (resContainer) resContainer.classList.remove('theme-black-gray');
+            if (labelText) labelText.textContent = 'ご来店時間';
+            if (timeSelect) timeSelect.innerHTML = normalOptionsHTML;
+            if (eventNote) eventNote.style.display = 'none';
+            if (planSectionTitle) planSectionTitle.innerHTML = '<span>🍹</span> ご利用予定のプラン(店舗で変更が可能です)';
+            if (normalPlanOptions) normalPlanOptions.style.display = 'grid';
+            if (specialOrderOptions) specialOrderOptions.style.display = 'none';
+
+            if (durationGroup) durationGroup.style.display = 'block';
+            if (resDuration) resDuration.setAttribute('required', 'required');
+            if (castSection) castSection.style.display = 'block';
+
+            // SNS IDを任意に戻す
+            if (snsInput) snsInput.removeAttribute('required');
+            if (snsBadge) {
+                snsBadge.className = 'optional';
+                snsBadge.textContent = '任意';
+            }
+            // 注意事項を標準に戻す
+            if (notesList) notesList.innerHTML = defaultNotesHTML;
+            return;
+        }
+
+        const parts = val.split('-');
+        const month = parts[1];
+        const day = parts[2];
+
+        if (month === '09' && day === '12') {
+            if (fixedBg) fixedBg.classList.add('event-date-0912');
+            if (resContainer) resContainer.classList.add('theme-black-gray');
+
+            if (labelText) labelText.textContent = 'ご来店区分';
+            if (timeSelect) timeSelect.innerHTML = specialPartOptionsHTML;
+            if (eventNote) eventNote.style.display = 'block';
+
+            if (planSectionTitle) planSectionTitle.innerHTML = '<span>🛍️</span> 注文メニュー（ジャンルごとに選択）';
+            if (normalPlanOptions) normalPlanOptions.style.display = 'none';
+            if (specialOrderOptions) specialOrderOptions.style.display = 'block';
+
+            if (durationGroup) durationGroup.style.display = 'none';
+            if (resDuration) {
+                resDuration.removeAttribute('required');
+                resDuration.value = '';
             }
 
-            function handleDateChange(selectedDate) {
-                // 日付が正常に確定した際の追加処理（フォーム値更新など）をここに記述
-                console.log("選択された日付:", selectedDate);
+            // 9月12日のみ、お目当てのキャストを非表示
+            if (castSection) castSection.style.display = 'none';
+
+            // 9月12日のみ SNS IDを必須に切り替え
+            if (snsInput) snsInput.setAttribute('required', 'required');
+            if (snsBadge) {
+                snsBadge.className = 'required';
+                snsBadge.textContent = '必須';
             }
 
-            function resetSelection() {
-                dateInput.value = '';
-                updateCastList('');
-                handleDateChange('');
+            // 9月12日専用の注意事項に切り替え
+            if (notesList) notesList.innerHTML = specialNotesHTML;
+        } else {
+            if (fixedBg) fixedBg.classList.remove('event-date-0912');
+            if (resContainer) resContainer.classList.remove('theme-black-gray');
+
+            if (labelText) labelText.textContent = 'ご来店時間';
+            if (timeSelect) timeSelect.innerHTML = normalOptionsHTML;
+            if (eventNote) eventNote.style.display = 'none';
+
+            if (planSectionTitle) planSectionTitle.innerHTML = '<span>🍹</span> ご利用プラン(店舗で変更が可能です)';
+            if (normalPlanOptions) normalPlanOptions.style.display = 'grid';
+            if (specialOrderOptions) specialOrderOptions.style.display = 'none';
+
+            if (durationGroup) durationGroup.style.display = 'block';
+            if (resDuration) resDuration.setAttribute('required', 'required');
+
+            // 通常日はキャスト選択を表示
+            if (castSection) castSection.style.display = 'block';
+
+            // 通常日は SNS IDを任意に復元
+            if (snsInput) snsInput.removeAttribute('required');
+            if (snsBadge) {
+                snsBadge.className = 'optional';
+                snsBadge.textContent = '任意';
             }
 
-            // --- 5. スマホ対応イベントリスナー ---
-            let isProcessing = false;
+            // 通常日は 標準の注意事項に復元
+            if (notesList) notesList.innerHTML = defaultNotesHTML;
+        }
+    }
 
-            dateInput.addEventListener('change', (e) => {
-                if (isProcessing) return;
-                const val = e.target.value;
-                if (!val) return;
+    // --- メール送信＆フォーム送信処理（GAS連携） ---
+    const form = document.getElementById('reservationForm');
+    const modal = document.getElementById('successModal');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const submitBtn = form ? form.querySelector('.submit-btn') : null;
 
-                isProcessing = true;
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-                // スマホのドラムロール選択中の連続発火・判定ずれを防ぐためのタイマー遅延
-                setTimeout(() => {
-                    try {
-                        // 過去日チェック
-                        if (val < todayStr) {
-                            alert('過去の日付はご予約いただけません。');
-                            resetSelection();
-                            return;
-                        }
+            // 電話番号の不一致チェック
+            const phone = document.getElementById('user-phone').value;
+            const phoneConfirm = document.getElementById('user-phone-confirm').value;
+            const phoneDiff = getMismatchInfo(phone, phoneConfirm);
 
-                        const isSpecialDate = val.endsWith('-09-12');
-                        const hasCastWorking = availableDates.includes(val);
+            if (phoneDiff) {
+                alert(`【電話番号が一致していません】\n\nもとの入力：${phone}\n確認用入力：${phoneConfirm}\n相違箇所 ：${phoneDiff}\n\n入力内容をご確認ください。`);
+                document.getElementById('user-phone-confirm').focus();
+                return;
+            }
 
-                        // 出勤キャストがいない日の判定
-                        if (!hasCastWorking && !isSpecialDate) {
-                            if (latestWorkDate && val <= latestWorkDate) {
-                                alert('選択された日付は【店休日】のため、ご予約いただけません。');
-                            } else {
-                                alert('選択された日付の出勤スケジュールは【未定】のため、まだご予約いただけません。\nスケジュール公開まで今しばらくお待ちください。');
-                            }
-                            resetSelection();
-                            return;
-                        }
+            // メールアドレスの不一致チェック
+            const email = document.getElementById('user-email').value;
+            const emailConfirm = document.getElementById('user-email-confirm').value;
+            const emailDiff = getMismatchInfo(email, emailConfirm);
 
-                        // 正常選択時
-                        updateCastList(val);
-                        handleDateChange(val);
-                    } finally {
-                        isProcessing = false;
-                    }
-                }, 150);
+            if (emailDiff) {
+                alert(`【メールアドレスが一致していません】\n\nもとの入力：${email}\n確認用入力：${emailConfirm}\n相違箇所 ：${emailDiff}\n\n入力内容をご確認ください。`);
+                document.getElementById('user-email-confirm').focus();
+                return;
+            }
+
+            // 9月12日選択時のジャンル別＆当日受け取り希望の必須チェック
+            const date = document.getElementById('res-date').value;
+            if (date && date.endsWith('-09-12')) {
+                const champNone = document.getElementById('order-champagne-none').checked;
+                const champItems = document.querySelectorAll('.item-checkbox[data-genre="champagne"]:checked').length > 0;
+                if (!champNone && !champItems) {
+                    alert('【🍾 オリシャン】ジャンルの選択は必須です。\nご注文のご予定がない場合は「注文予定なし」にチェックを入れてください。');
+                    return;
+                }
+
+                const goodsNone = document.getElementById('order-goods-none').checked;
+                const goodsItems = document.querySelectorAll('.item-checkbox[data-genre="goods"]:checked').length > 0;
+                if (!goodsNone && !goodsItems) {
+                    alert('【🎁 グッズ】ジャンルの選択は必須です。\nご注文のご予定がない場合は「注文予定なし」にチェックを入れてください。');
+                    return;
+                }
+
+                // 当日受け取り希望の未選択チェック
+                const pickupChecked = document.querySelector('input[name="same_day_pickup"]:checked');
+                if (!pickupChecked) {
+                    alert('【📦 当日受け取り希望】の選択は必須です。\n希望する／希望しないのいずれかを選択してください。');
+                    return;
+                }
+            }
+
+            // 二重送信防止
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = '送信中...';
+            }
+
+            const time = document.getElementById('res-time').value;
+            const duration = document.getElementById('res-duration').value;
+            const guests = document.getElementById('res-guests').value;
+            const name = document.getElementById('user-name').value;
+
+            let formattedDateTime = "";
+            if (date) {
+                const parts = date.split('-');
+                formattedDateTime = `${parts[0]}年${parseInt(parts[1])}月${parseInt(parts[2])}日 ${time}`;
+            }
+
+            // 送信データの作成（数量を含めた整形）
+            const formData = new FormData(form);
+
+            if (date && date.endsWith('-09-12')) {
+                // オリシャンのデータ整形
+                if (document.getElementById('order-champagne-none').checked) {
+                    formData.append('order_champagne', '注文予定なし');
+                } else {
+                    document.querySelectorAll('.item-checkbox[data-genre="champagne"]:checked').forEach(cb => {
+                        const qty = cb.closest('.item-card').querySelector('.qty-select').value;
+                        formData.append('order_champagne', `${cb.value} × ${qty}個`);
+                    });
+                }
+
+                // グッズのデータ整形
+                if (document.getElementById('order-goods-none').checked) {
+                    formData.append('order_goods', '注文予定なし');
+                } else {
+                    document.querySelectorAll('.item-checkbox[data-genre="goods"]:checked').forEach(cb => {
+                        const qty = cb.closest('.item-card').querySelector('.qty-select').value;
+                        formData.append('order_goods', `${cb.value} × ${qty}個`);
+                    });
+                }
+            }
+
+            // GASのウェブアプリURL
+            const GAS_URL = "https://script.google.com/macros/s/AKfycbwx7rLvCIWAQIglRKs7Sc6VpfdDxB0rHKbpbQIGhBzMU1GIyRdKxFcRlQWIKoUo5IWI/exec"; 
+
+            fetch(GAS_URL, {
+                method: "POST",
+                body: new URLSearchParams(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === "success") {
+                    const durationInfo = duration ? ` / 滞在予定：${duration}` : '';
+                    document.getElementById('modalMsg').innerHTML = `
+                        ${name} 様<br><br>
+                        <strong>${formattedDateTime}</strong><br>
+                        （${guests}${durationInfo}）のご来店予約を受け付けました。<br><br>
+                        ご入力いただいたメールアドレス宛に確認メールを送信しました。
+                    `;
+                    modal.style.display = 'flex';
+                } else {
+                    throw new Error(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('送信に失敗しました。お手数ですが、時間をおいて再度お試しいただくかSNSダイレクトメッセージよりご連絡ください。');
+            })
+            .finally(() => {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '予約を送信する';
+                }
             });
         });
-    </script>
+    }
+
+    if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+            form.reset();
+            // カードの初期化
+            document.querySelectorAll('.plan-card').forEach(card => card.classList.remove('is-checked'));
+            document.querySelectorAll('.qty-select').forEach(sel => {
+                sel.disabled = true;
+                sel.value = "1";
+            });
+            handleDateChange("");
+        });
+    }
+</script>
 </body>
 </html>
