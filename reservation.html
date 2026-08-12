@@ -1389,9 +1389,9 @@
         return `${y}-${m}-${d}`;
     }
 
-    // castMembersが未定義の場合の安全ガード追加
+    // ★キャスト出勤データの安全取得ガード
     const availableDates = (typeof castMembers !== 'undefined' && Array.isArray(castMembers))
-        ? Array.from(new Set(castMembers.flatMap(cast => cast.workDays || []))).sort()
+        ? Array.from(new Set(castMembers.flatMap(cast => (cast && Array.isArray(cast.workDays)) ? cast.workDays : []))).sort()
         : [];
 
     const latestWorkDate = availableDates.length > 0 ? availableDates[availableDates.length - 1] : "";
@@ -1405,9 +1405,9 @@
         maxDateObj.setMonth(maxDateObj.getMonth() + 2);
         dateInput.setAttribute('max', getFormattedDate(maxDateObj));
 
-        // ★【iOS Safari対策】今日以降の「最初の営業日」をあらかじめ初期値にセットする
+        // ★今日以降の「最初の営業日」をあらかじめ初期値にセットする
         const firstAvailableDate = availableDates.find(d => d >= todayStr);
-        let lastValidDate = firstAvailableDate || "";
+        let lastValidDate = firstAvailableDate || todayStr;
 
         if (firstAvailableDate) {
             dateInput.value = firstAvailableDate;
@@ -1419,7 +1419,10 @@
             const val = e.target.value;
             if (!val) return;
 
-            if (val < todayStr) {
+            const isSpecialDate = val.endsWith('-09-12'); // 9/12判定
+
+            // 過去日チェック（9/12の特別判定含む）
+            if (val < todayStr && !isSpecialDate) {
                 alert('過去の日付はご予約いただけません。');
                 e.target.value = lastValidDate;
                 updateCastList(lastValidDate);
@@ -1427,9 +1430,9 @@
                 return;
             }
 
-            const isSpecialDate = val.endsWith('-09-12');
             const hasCastWorking = availableDates.includes(val);
 
+            // 出勤日データなし ＆ 9/12でもない場合は弾いて8/14などの直前有効日に復元
             if (!hasCastWorking && !isSpecialDate) {
                 if (latestWorkDate && val <= latestWorkDate) {
                     alert('選択された日付は【店休日】のため、ご予約いただけません。');
@@ -1437,19 +1440,19 @@
                     alert('選択された日付の出勤スケジュールは【未定】のため、まだご予約いただけません。\nスケジュール公開まで今しばらくお待ちください。');
                 }
                 
-                // ★【iOS Safari対策】空にせず直前の有効な営業日に戻してループを防ぐ
                 e.target.value = lastValidDate;
                 updateCastList(lastValidDate);
                 handleDateChange(lastValidDate);
                 return;
             }
 
-            // 正常に選択できた日付を保持
+            // 正常に選択できた日付を保持して切り替えを実行
             lastValidDate = val;
             handleDateChange(val);
         });
     }
 
+    // ★キャスト一覧更新（データ不備によるエラー防止ガード付き）
     function updateCastList(selectedDateStr) {
         const container = document.getElementById('cast-select-grid');
         if (!container) return;
@@ -1465,7 +1468,7 @@
         `;
 
         if (selectedDateStr && typeof castMembers !== 'undefined' && Array.isArray(castMembers)) {
-            const workingCasts = castMembers.filter(cast => cast.workDays.includes(selectedDateStr));
+            const workingCasts = castMembers.filter(cast => cast && Array.isArray(cast.workDays) && cast.workDays.includes(selectedDateStr));
             workingCasts.forEach(cast => {
                 html += `
                     <div class="cast-option">
