@@ -575,7 +575,7 @@
             border-color: #ffffff;
         }
 
-        /* ★ 修正ポイント：ご予約時の注意事項枠の文字色を注文メニューの注意事項と同色(#ff8da1)に変更 */
+        /* ご予約時の注意事項枠の文字色 */
         .theme-black-gray .notes-box {
             background-color: #202226;
             border-color: #4a4e58;
@@ -794,16 +794,16 @@
                         <div class="plan-options">
                             <!-- 注文予定なし -->
                             <div class="plan-card">
-                                <input type="checkbox" id="order-fillico-none" class="none-checkbox" data-genre="champagne" value="注文予定なし">
+                                <input type="checkbox" id="order-fillico-none" class="none-checkbox" data-genre="fillico" value="注文予定なし">
                                 <label for="order-fillico-none">
                                     <div class="plan-title"><span>注文予定なし</span></div>
                                     <div class="plan-desc">フィリコのご注文はありません</div>
                                 </label>
                             </div>
 
-                            <!-- ノンアルコール -->
+                            <!-- フィリコ -->
                             <div class="plan-card item-card">
-                                <input type="checkbox" id="order-fillico-item" class="item-checkbox" data-genre="champagne" value="フィリコ（¥110,000）">
+                                <input type="checkbox" id="order-fillico-item" class="item-checkbox" data-genre="fillico" value="フィリコ（¥110,000）">
                                 <label for="order-fillico-item">
                                     <div class="plan-title">
                                         <span>フィリコ</span>
@@ -1635,6 +1635,15 @@
             // 9月12日選択時のジャンル別＆当日受け取り希望の必須チェック
             const date = document.getElementById('res-date').value;
             if (date && date.endsWith('-09-12')) {
+                // フィリコチェック
+                const fillicoNone = document.getElementById('order-fillico-none').checked;
+                const fillicoItems = document.querySelectorAll('.item-checkbox[data-genre="fillico"]:checked').length > 0;
+                if (!fillicoNone && !fillicoItems) {
+                    alert('【🍾 フィリコ】ジャンルの選択は必須です。\nご注文のご予定がない場合は「注文予定なし」にチェックを入れてください。');
+                    return;
+                }
+
+                // オリシャンチェック
                 const champNone = document.getElementById('order-champagne-none').checked;
                 const champItems = document.querySelectorAll('.item-checkbox[data-genre="champagne"]:checked').length > 0;
                 if (!champNone && !champItems) {
@@ -1642,6 +1651,7 @@
                     return;
                 }
 
+                // グッズチェック
                 const goodsNone = document.getElementById('order-goods-none').checked;
                 const goodsItems = document.querySelectorAll('.item-checkbox[data-genre="goods"]:checked').length > 0;
                 if (!goodsNone && !goodsItems) {
@@ -1678,6 +1688,16 @@
             const formData = new FormData(form);
 
             if (date && date.endsWith('-09-12')) {
+                // フィリコのデータ整形
+                if (document.getElementById('order-fillico-none').checked) {
+                    formData.append('order_fillico', '注文予定なし');
+                } else {
+                    document.querySelectorAll('.item-checkbox[data-genre="fillico"]:checked').forEach(cb => {
+                        const qty = cb.closest('.item-card').querySelector('.qty-select').value;
+                        formData.append('order_fillico', `${cb.value} × ${qty}個`);
+                    });
+                }
+
                 // オリシャンのデータ整形
                 if (document.getElementById('order-champagne-none').checked) {
                     formData.append('order_champagne', '注文予定なし');
