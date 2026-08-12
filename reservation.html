@@ -8,6 +8,23 @@
     <style>
         /* --- 予約フォーム専用のスタイル拡張 --- */
 
+        /* iOS Safari日付選択改善（警告が出ない標準準拠の記述） */
+        input[type="date"] {
+            position: relative;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
         /* ★ 9月12日専用：横画面（PCなど）用の背景画像 */
         .fixed-background.event-date-0912 {
             background-image: url('ゆ生誕よこ.png') !important; /* ※横画像（PC用）のパス */
@@ -492,7 +509,6 @@
             color: #f0f0f0;
         }
 
-        /* 9月12日テーマ時の「必須」バッジ色を統合 */
         .theme-black-gray .required {
             background-color: #585c66;
             color: #ffffff;
@@ -575,7 +591,6 @@
             border-color: #ffffff;
         }
 
-        /* ★ 修正ポイント：ご予約時の注意事項枠の文字色を注文メニューの注意事項と同色(#ff8da1)に変更 */
         .theme-black-gray .notes-box {
             background-color: #202226;
             border-color: #4a4e58;
@@ -1374,9 +1389,10 @@
         return `${y}-${m}-${d}`;
     }
 
-    const availableDates = Array.from(
-        new Set(castMembers.flatMap(cast => cast.workDays || []))
-    ).sort();
+    // castMembersが未定義の場合の安全ガード追加
+    const availableDates = (typeof castMembers !== 'undefined' && Array.isArray(castMembers))
+        ? Array.from(new Set(castMembers.flatMap(cast => cast.workDays || []))).sort()
+        : [];
 
     const latestWorkDate = availableDates.length > 0 ? availableDates[availableDates.length - 1] : "";
 
@@ -1389,15 +1405,25 @@
         maxDateObj.setMonth(maxDateObj.getMonth() + 2);
         dateInput.setAttribute('max', getFormattedDate(maxDateObj));
 
+        // ★【iOS Safari対策】今日以降の「最初の営業日」をあらかじめ初期値にセットする
+        const firstAvailableDate = availableDates.find(d => d >= todayStr);
+        let lastValidDate = firstAvailableDate || "";
+
+        if (firstAvailableDate) {
+            dateInput.value = firstAvailableDate;
+            updateCastList(firstAvailableDate);
+            handleDateChange(firstAvailableDate);
+        }
+
         dateInput.addEventListener('change', (e) => {
             const val = e.target.value;
             if (!val) return;
 
             if (val < todayStr) {
                 alert('過去の日付はご予約いただけません。');
-                e.target.value = '';
-                updateCastList("");
-                handleDateChange("");
+                e.target.value = lastValidDate;
+                updateCastList(lastValidDate);
+                handleDateChange(lastValidDate);
                 return;
             }
 
@@ -1411,12 +1437,15 @@
                     alert('選択された日付の出勤スケジュールは【未定】のため、まだご予約いただけません。\nスケジュール公開まで今しばらくお待ちください。');
                 }
                 
-                e.target.value = '';
-                updateCastList("");
-                handleDateChange("");
+                // ★【iOS Safari対策】空にせず直前の有効な営業日に戻してループを防ぐ
+                e.target.value = lastValidDate;
+                updateCastList(lastValidDate);
+                handleDateChange(lastValidDate);
                 return;
             }
 
+            // 正常に選択できた日付を保持
+            lastValidDate = val;
             handleDateChange(val);
         });
     }
@@ -1435,7 +1464,7 @@
             </div>
         `;
 
-        if (selectedDateStr) {
+        if (selectedDateStr && typeof castMembers !== 'undefined' && Array.isArray(castMembers)) {
             const workingCasts = castMembers.filter(cast => cast.workDays.includes(selectedDateStr));
             workingCasts.forEach(cast => {
                 html += `
