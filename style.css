@@ -259,7 +259,7 @@ body {
     border-radius: 10px;      /* 角丸 */
     margin-bottom: 20px;
     background-size: cover;    /* 枠いっぱいに表示 */
-    background-position: center top;  /* 画像の上部を基準に配置*/
+    background-position: center 15%;  /* 画像の上部を基準に配置*/
 }
 
 .profile-item h3 {
