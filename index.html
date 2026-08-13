@@ -32,6 +32,7 @@
             align-items: center;
             justify-content: center;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer; /* タップ可能アイコンにする */
         }
 
         /* ホバー時のカード浮き上がり効果 */
@@ -139,6 +140,73 @@
         .floating-reservation-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(255, 141, 161, 0.5);
+        }
+
+        /* --- モーダル (タップ時の写真拡大表示) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal-content-wrapper {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-content {
+            width: 100%;
+            max-height: 65vh;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .modal-caption {
+            margin-top: 12px;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            color: #4a3b52;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: #888;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2001;
+        }
+
+        .modal-close:hover {
+            color: #ff9ebb;
         }
     </style>
 </head>
@@ -311,6 +379,17 @@
         </div>
     </section>
 
+    <!-- 写真拡大表示用モーダル -->
+    <div id="image-modal" class="modal" onclick="closeModal()">
+        <div class="modal-content-wrapper" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <img class="modal-content" id="modal-img" src="" alt="キャスト画像">
+            <div class="modal-caption">
+                <h3 id="modal-title" class="modal-title"></h3>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="footer-content">
             <p class="group-name">
@@ -398,6 +477,9 @@
                 const card = document.createElement('div');
                 card.className = 'trump-card';
                 
+                // カードタップ時にモーダルで拡大表示
+                card.onclick = () => openModal(cast.image, cast.name);
+
                 card.innerHTML = `
                     <div class="trump-card-inner">
                         <img src="${cast.image}" alt="${cast.name}" class="cast-photo">
@@ -407,6 +489,30 @@
                 container.appendChild(card);
             });
         }
+
+        // --- 写真拡大表示用モーダル制御 ---
+        function openModal(imageSrc, name) {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-img');
+            const modalTitle = document.getElementById('modal-title');
+
+            modalImg.src = imageSrc;
+            modalTitle.textContent = name;
+
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('image-modal');
+            modal.style.display = 'none';
+        }
+
+        // キーボードのEscキーでもモーダルを閉じる
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
 
         // 初期化とボタンイベント
         document.addEventListener('DOMContentLoaded', () => {

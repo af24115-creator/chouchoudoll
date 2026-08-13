@@ -51,7 +51,7 @@ const castMembers = [
     {
         id: "cast-binetsu",
         name: "微熱",
-        image: "j.png",
+        image: "微熱.jpeg",
         workDays: ["2026-08-01"]
     }
 ];
