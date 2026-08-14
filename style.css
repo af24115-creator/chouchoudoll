@@ -104,13 +104,12 @@ body {
 }
 
 .main-logo-img {
-    width: 90%;          /* スマホで横幅いっぱいに。適宜調整してください */
+    width: 90%;          /* スマホで横幅いっぱいに */
     max-width: 600px;    /* PCで大きくなりすぎないように制限 */
     height: auto;
     margin-bottom: 10px;
     filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
     filter: drop-shadow(0 0 15px rgba(255, 255, 255, 4.5));
-
 }
 
 .visual-text p {
@@ -122,7 +121,7 @@ body {
 
 /* 共通セクション設定 */
 .container {
-    padding: 100px 10%;
+    padding: 60px 5%;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -134,8 +133,6 @@ body {
     letter-spacing: 0.1em;
     position: relative;
 }
-
-
 
 /* NEWSリスト全体 */
 .news-list {
@@ -162,10 +159,10 @@ body {
     transition: opacity 0.2s ease;
 }
 
-/* ホバー・タップ時に少し透明にしてフィードバックを与える */
 .news-list li a.news-link:hover {
     opacity: 0.65;
 }
+
 /* ニュースの著者表示（右寄せ） */
 .news-author {
     text-align: right;   
@@ -204,6 +201,7 @@ body {
     flex: 1 1 auto;          /* 余った横幅を自動で伸ばす */
     line-height: 1.5;
     color: #333;
+    margin-left: 10px;
 }
 
 .view-more {
@@ -226,26 +224,21 @@ body {
 }
 
 /* 背景色 */
-#news, #profile-summary,#recruit,#calender,#access,#shop,#schedule {
+#news, #profile-summary, #recruit, #calender, #access, #shop, #schedule {
     background-color: rgba(255, 255, 255, 0.9); /* 90%不透明の白 */
     margin: 50px auto;       /* 上下に余白を作り、中央寄せ */
     padding: 60px 5%;        /* 内側の余白を調整 */
-    border-radius: 30px;     /* 角を丸*/
+    border-radius: 30px;     /* 角を丸 */
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); /* 影 */
     max-width: 1100px;       /* 横幅制限 */
     position: relative;
     z-index: 1;
 }
 
-/* セクション間の隙間から背景*/
-.container {
-    /* 既存の .container の padding を少し控えめにする */
-    padding: 60px 5%;
-}
 /* プロフィールグリッド */
 .profile-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 40px;
 }
 
@@ -253,13 +246,16 @@ body {
     text-align: center;
 }
 
+/* プロフィール画像コンテナ（レスポンシブ・アスペクト比固定） */
 .profile-image {
+    position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1;      /* 枠維持 */
-    border-radius: 10px;      /* 角丸 */
+    aspect-ratio: 1 / 1;          /* 正方形に固定 */
+    border-radius: 12px;          /* 角丸 */
     margin-bottom: 20px;
-    background-size: cover;    /* 枠いっぱいに表示 */
-    background-position: center 15%;  /* 画像の上部を基準に配置*/
+    background-size: cover;        /* 枠いっぱいに表示 */
+    background-position: center 15%;  /* 画像の上部を基準に配置 */
+    overflow: hidden;             /* 角丸からはみ出る要素をカット */
 }
 
 .profile-item h3 {
@@ -337,7 +333,7 @@ body {
     margin-bottom: 30px;
     display: flex;
     justify-content: center;
-    gap: 15px; /* ボタン同士の隙間 */
+    gap: 15px;
 }
 
 .sns-btn {
@@ -347,7 +343,7 @@ body {
     font-weight: bold;
     text-decoration: none;
     color: #fff;
-    border-radius: 20px; /* 丸いボタン */
+    border-radius: 20px;
     transition: transform 0.3s, opacity 0.3s;
 }
 
@@ -357,48 +353,33 @@ body {
 }
 
 /* 各SNSのブランドカラー */
-.x-link { background-color: #000; } /* X*/
-.insta-link { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); } /* インスタ*/
-.tiktok-link { background-color: #010101; border: 1px solid #ff0050; } /* TikTok*/
+.x-link { background-color: #000; }
+.insta-link { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+.tiktok-link { background-color: #010101; border: 1px solid #ff0050; }
 
 /* メンバープロフィール内のSNSボタン */
 .member-sns {
     margin-top: 15px;
     display: flex;
     justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .member-sns .sns-btn {
-    padding: 5px 15px;
-    font-size: 12px;
+    padding: 5px 12px;
+    font-size: 11px;
     border-radius: 15px;
+    min-width: 60px;
+    text-align: center;
     text-decoration: none;
     color: #fff;
-    background-color: #000; /* Xのカラー */
     transition: 0.3s;
 }
 
 .member-sns .sns-btn:hover {
     opacity: 0.7;
     transform: scale(1.05);
-}
-
-/* メンバープロフィール内のSNSエリアを調整 */
-.member-sns {
-    margin-top: 15px;
-    display: flex;
-    justify-content: center;
-    gap: 8px; /* ボタン同士の隙間 */
-    flex-wrap: wrap; /* スマホで入り切らない場合に折り返す */
-}
-
-/* メンバー用SNSボタンの微調整 */
-.member-sns .sns-btn {
-    padding: 5px 12px; /* 少しスリムに */
-    font-size: 11px;    /* 文字を少し小さくして収まりを良くする */
-    border-radius: 15px;
-    min-width: 60px;   /* ボタンの最低幅を揃える */
-    text-align: center;
 }
 
 /* 求人ページ用のスタイル */
@@ -444,7 +425,7 @@ body {
 /* カレンダーをレスポンシブ対応にする */
 .calendar-wrapper {
     position: relative;
-    padding-bottom: 75%; /* 4:3のアスペクト比 */
+    padding-bottom: 75%;
     height: 0;
     overflow: hidden;
 }
@@ -467,22 +448,26 @@ body {
 }
 
 .system-wrapper {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
 }
 
 .system-box {
-    background: #fff;
-    padding: 25px;
+    background: rgba(255, 255, 255, 0.8);
     border-radius: 20px;
     border: 1px solid #ffe4ee;
+    padding: 20px;
+    width: 100%;
+    max-width: 350px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .system-box h3 {
     color: #ff4d94;
-    font-size: 20px;
-    margin-bottom: 20px;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
     text-align: center;
     border-bottom: 2px solid #ff4d94;
     display: inline-block;
@@ -511,167 +496,7 @@ body {
 .system-table td {
     text-align: right;
     color: #333;
-    font-family: 'Georgia', serif; /* 数字を綺麗に見せる */
-}
-
-/* スマホ用調整 */
-@media (max-width: 480px) {
-    .system-wrapper {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* スマホ用の調整 */
-@media (max-width: 768px) {
-    .recruit-table th, .recruit-table td {
-        display: block;
-        width: 100%;
-    }
-    .recruit-table th {
-        background-color: transparent;
-        padding-bottom: 5px;
-    }
-}
-
-/* --- ゆいにゃさん専用特別スタイル --- */
-
-/* 1. カード全体に輝く枠線をつける */
-.profile-item.special-member {
-    position: relative;
-    padding: 15px;
-    border-radius: 20px;
-    background: linear-gradient(white, white) padding-box,
-                linear-gradient(45deg, #ff4d94, #ffdb58, #ff4d94) border-box;
-    border: 3px solid transparent;
-    transform: scale(1.05); /* 他のメンバーより少し大きく */
-    box-shadow: 0 10px 20px rgba(255, 77, 148, 0.2);
-    z-index: 2;
-}
-
-/* 2. 画像の左上に「LEADER」ラベルを配置 */
-.special-label {
-    position: absolute;
-    top: -10px;
-    left: -10px;
-    background: #ff4d94;
-    color: #fff;
-    padding: 5px 15px;
-    font-size: 12px;
-    font-weight: bold;
-    border-radius: 50px;
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-    z-index: 10;
-}
-
-/* 3. 名前の色を特別にする */
-.special-member h3 {
-    color: #ff4d94;
-    font-size: 26px; /* 少し大きく */
-    text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
-}
-
-/* スマホでは大きさを微調整 */
-@media (max-width: 768px) {
-    .profile-item.special-member {
-        transform: scale(1.02);
-        margin-bottom: 30px;
-    }
-}
-
-
-
-/* --- ハンバーガーメニューのスタイル --- */
-
-/* PCではボタンを隠す */
-.hamburger {
-    display: none;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 30px;
-    height: 20px;
-    cursor: pointer;
-    z-index: 1100; /* ヘッダーより上に */
-}
-
-.hamburger span {
-    width: 100%;
-    height: 2px;
-    background-color: #000;
-    transition: all 0.3s;
-}
-
-/* スマホ表示（768px以下） */
-@media (max-width: 768px) {
-    /* ヘッダーのレイアウト崩れを防ぐ */
-    .header {
-        flex-direction: row; /* 縦並びにならないように横並びを維持 */
-        justify-content: space-between;
-        padding: 10px 5%;
-    }
-
-    /* メニューを隠す設定 */
-    .nav {
-        position: fixed;
-        top: 0;
-        right: -100%; /* 画面の外へ */
-        width: 100%;  /* スマホなら全画面でもOK */
-        height: 100vh;
-        background: rgba(255, 255, 255, 0.98);
-        transition: 0.5s;
-        z-index: 1050;
-        display: block; /* 消えてしまわないように */
-    }
-
-    .nav.active {
-        right: 0; /* 表示 */
-    }
-
-    .nav ul {
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        padding: 0;
-    }
-
-    .nav ul li {
-        margin: 20px 0; /* メニューの間隔を広げる */
-        margin-left: 0; /* PC用のマージンをリセット */
-    }
-
-    .nav ul li a {
-        font-size: 20px; /* 文字を大きく */
-    }
-
-    /* ボタンを表示させる */
-    .hamburger {
-        display: flex;
-    }
-}
-
-/* SYSTEMセクションのスタイル調整 */
-.system-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-}
-
-.system-box {
-    background: rgba(255, 255, 255, 0.8); /* 背景を少し透過させておしゃれに */
-    border-radius: 10px;
-    padding: 20px;
-    width: 100%;
-    max-width: 350px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-
-.system-box h3 {
-    border-bottom: 2px solid #ffb6c1; /* ロゴに合わせた色に変更してください */
-    margin-bottom: 15px;
-    padding-bottom: 5px;
-    font-size: 1.2rem;
-    color: #333;
+    font-family: 'Georgia', serif;
 }
 
 .system-list {
@@ -707,29 +532,9 @@ body {
     margin-top: 30px;
 }
 
-.news-text {
-    color: #333;       /* 文字の色を濃くして読みやすくする */
-    margin-left: 10px; /* カテゴリとの間隔を空ける */
-}
-
-.map-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 900px; /* 地図の最大幅 */
-    margin: 0 auto;   /* 中央寄せ */
-    border-radius: 15px;
-    overflow: hidden; /* 角丸を適用 */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.map-wrapper iframe {
-    display: block;
-    width: 100%; /* 横幅いっぱいに広げる */
-}
-
-/* ACCESS全体の白い枠 */
+/* ACCESSマップ */
 .access-wrapper {
-    background: rgba(255, 255, 255, 0.8); /* 他のセクションと合わせた透過白 */
+    background: rgba(255, 255, 255, 0.8);
     border-radius: 15px;
     padding: 20px;
     max-width: 900px;
@@ -737,14 +542,22 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
-/* 地図の角を丸くする */
 .map-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
     border-radius: 10px;
     overflow: hidden;
-    line-height: 0; /* 下の余計な隙間を消す */
+    line-height: 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-/* 住所テキストの装飾 */
+.map-wrapper iframe {
+    display: block;
+    width: 100%;
+}
+
 .access-info {
     text-align: center;
     margin-top: 20px;
@@ -763,56 +576,49 @@ body {
     color: #666;
 }
 
-/* ==========================================
-　 スマホ画面（768px以下）用のカード・枠線調整
-   ========================================== */
-@media (max-width: 768px) {
-    /* 1. 各セクションの白い四角（カード枠）をスマホに最適化 */
-    #news, #schedule, #system, #profile-summary, #access, #shop {
-        width: 92%;          /* スマホ画面の横幅92%に合わせる */
-        margin: 30px auto;   /* 中央寄せ＆上下の余白を適切にする */
-        padding: 40px 15px;  /* 内側の余白をスマホ用にすっきり調整 */
-    }
+/* --- ゆいにゃさん専用特別スタイル --- */
 
-    /* 2. SCHEDULEの出勤カード（キャストカード）の幅をスマホ用に調整 */
-    .trump-card {
-        width: 130px;        /* スマホで横に並びやすく少し小さく調整 */
-        height: 190px;
-    }
-
-    .cast-photo {
-        width: 95px;
-        height: 120px;
-    }
-.news-list li a.news-link {
-        flex-wrap: wrap !important; /* スマホでは折り返しを許可 */
-    }
-
-    .news-author {
-        display: block;
-        width: 100%;          /* 100%幅を使って強制改行 */
-        text-align: right;    /* 右寄せ */
-        font-size: 0.8rem;    /* スマホ用に少し小さめ */
-        color: #666;
-        margin-top: 6px;
-    }
-    
-    /* 画像コンテナを基準位置に設定 */
-.profile-image {
+/* 1. カード全体に輝く枠線をつける */
+.profile-item.special-member {
     position: relative;
-    overflow: hidden; /* はみ出し部分を整形 */
+    padding: 15px;
+    border-radius: 20px;
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(45deg, #ff4d94, #ffdb58, #ff4d94) border-box;
+    border: 3px solid transparent;
+    transform: scale(1.05); /* 他のメンバーより少し大きく */
+    box-shadow: 0 10px 20px rgba(255, 77, 148, 0.2);
+    z-index: 2;
 }
 
-
+/* 2. 画像の左上に「PRODUCER」ラベルを配置（画像内に綺麗に収める） */
+.special-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ff4d94;
+    color: #fff;
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 20px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    letter-spacing: 0.5px;
 }
+
+/* 3. 名前の色を特別にする */
+.special-member h3 {
+    color: #ff4d94;
+    font-size: 26px;
+    text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
+}
+
 /* ==========================================
 出勤キャスト用 リボンバッジ（PC・スマホ共通）
 ========================================= */
-.profile-image {
-    position: relative !important;
-}
-
-/* ぷっくり可愛いリボンバッジ */
 .work-ribbon {
     position: absolute;
     top: 10px;
@@ -830,9 +636,122 @@ body {
     letter-spacing: 1px;
 }
 
-/* 自動で先頭にリボンアイコンを付与 */
 .work-ribbon::before {
     content: "🎀 ";
     margin-right: 3px;
     font-size: 12px;
+}
+
+/* --- ハンバーガーメニューのスタイル --- */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 1100;
+}
+
+.hamburger span {
+    width: 100%;
+    height: 2px;
+    background-color: #000;
+    transition: all 0.3s;
+}
+
+/* ==========================================
+  スマホ画面（768px以下）用の調整
+   ========================================== */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 10px 5%;
+    }
+
+    .nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.98);
+        transition: 0.5s;
+        z-index: 1050;
+        display: block;
+    }
+
+    .nav.active {
+        right: 0;
+    }
+
+    .nav ul {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding: 0;
+    }
+
+    .nav ul li {
+        margin: 20px 0;
+        margin-left: 0;
+    }
+
+    .nav ul li a {
+        font-size: 20px;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    #news, #schedule, #system, #profile-summary, #access, #shop {
+        width: 92%;
+        margin: 30px auto;
+        padding: 40px 15px;
+    }
+
+    .trump-card {
+        width: 130px;
+        height: 190px;
+    }
+
+    .cast-photo {
+        width: 95px;
+        height: 120px;
+    }
+
+    .news-list li a.news-link {
+        flex-wrap: wrap !important;
+    }
+
+    .news-author {
+        display: block;
+        width: 100%;
+        text-align: right;
+        font-size: 0.8rem;
+        color: #666;
+        margin-top: 6px;
+    }
+
+    .recruit-table th, .recruit-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .recruit-table th {
+        background-color: transparent;
+        padding-bottom: 5px;
+    }
+
+    .profile-item.special-member {
+        transform: scale(1.02);
+        margin-bottom: 30px;
+    }
+
+    .system-wrapper {
+        grid-template-columns: 1fr;
+    }
 }
