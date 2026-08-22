@@ -110,6 +110,7 @@
 
         .form-control {
             width: 100%;
+            max-width: 100%;
             padding: 12px 16px;
             border: 1.5px solid #e2d5ed;
             border-radius: 12px;
@@ -119,6 +120,22 @@
             transition: all 0.3s ease;
             box-sizing: border-box;
             outline: none;
+        }
+
+        /* ★ご来店日（input[type="date"]）のはみ出し防止と高さ統一修正★ */
+        input[type="date"].form-control {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            min-height: 48px; /* selectタグと高さを揃える */
+            font-family: inherit;
+        }
+
+        /* iOS/Chromeで文字や内部パーツがはみ出るのを防ぐ修正 */
+        input[type="date"]::-webkit-date-and-time-value {
+            text-align: left;
+            margin: 0;
         }
 
         .form-control:focus {
@@ -136,6 +153,7 @@
         .form-col {
             flex: 1;
             min-width: 220px;
+            max-width: 100%;
         }
 
         /* イベント用注記 */
