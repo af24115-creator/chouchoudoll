@@ -1426,6 +1426,14 @@
                 return;
             }
 
+            if (val.endsWith('-09-13')) {
+                alert('9月13日はイベント日のため、こちらのフォームからはご予約いただけません。');
+                e.target.value = '';
+                updateCastList("");
+                handleDateChange("");
+                return;
+            }
+
             const isSpecialDate = val.endsWith('-09-12');
             const hasCastWorking = availableDates.includes(val);
 
