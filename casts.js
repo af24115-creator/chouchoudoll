@@ -52,6 +52,6 @@ const castMembers = [
         id: "cast-yayoi",
         name: "やよい",
         image: "j.png",
-        workDays: ["2026-10-02"]
+        workDays: ["2026-10-02","2026-10-04"]
     }
 ];
